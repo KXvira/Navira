@@ -9,6 +9,7 @@ export default function TabLayout() {
   }}>
     <Tabs.Screen name="index" options={{ title: 'Location', tabBarAccessibilityLabel: 'Location tab' }} />
     <Tabs.Screen name="waypoints" options={{ title: 'Waypoints', tabBarAccessibilityLabel: 'Waypoints tab' }} />
+    <Tabs.Screen name="routes" options={{ title: 'Routes', tabBarAccessibilityLabel: 'Routes tab' }} />
     <Tabs.Screen name="satellites" options={{ title: 'Satellites', tabBarAccessibilityLabel: 'Satellites tab' }} />
   </Tabs>;
 }

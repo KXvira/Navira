@@ -6,9 +6,11 @@
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-crypto": "~57.0.3",
+    "expo-file-system": "~57.0.7",
     "expo-linking": "~57.0.11",
     "expo-location": "~57.0.20",
     "expo-router": "~57.0.24",
+    "expo-sharing": "~57.0.22",
     "expo-sqlite": "~57.0.3",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
@@ -35,7 +37,8 @@
     "test:waypoints": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-waypoint-tests tests/waypointValidation.test.ts src/utils/waypointValidation.ts src/utils/locationDisplay.ts src/types/waypoint.ts src/types/location.ts && node /tmp/navira-waypoint-tests/tests/waypointValidation.test.js",
     "test:guidance": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-guidance-tests tests/guidance.test.ts src/utils/guidance.ts && node /tmp/navira-guidance-tests/tests/guidance.test.js",
     "test:gnss": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-gnss-tests tests/gnssDisplay.test.ts src/utils/gnssDisplay.ts src/types/gnss.ts && node /tmp/navira-gnss-tests/tests/gnssDisplay.test.js",
-    "test:accuracy": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-accuracy-tests tests/accuracyDisplay.test.ts src/utils/accuracyDisplay.ts && node /tmp/navira-accuracy-tests/tests/accuracyDisplay.test.js"
+    "test:accuracy": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-accuracy-tests tests/accuracyDisplay.test.ts src/utils/accuracyDisplay.ts && node /tmp/navira-accuracy-tests/tests/accuracyDisplay.test.js",
+    "test:routes": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-route-tests tests/routeRecording.test.ts tests/gpx.test.ts src/types/route.ts src/utils/recordingState.ts src/utils/routeSampling.ts src/utils/guidance.ts src/utils/gpx.ts && node /tmp/navira-route-tests/tests/routeRecording.test.js && node /tmp/navira-route-tests/tests/gpx.test.js > /tmp/navira-route-test.gpx && python3 -c \"import xml.etree.ElementTree as ET; r=ET.parse('/tmp/navira-route-test.gpx').getroot(); ns={'g':'http://www.topografix.com/GPX/1/1'}; assert len(r.findall('.//g:trkseg', ns)) == 2\""
   },
   "private": true
 }

@@ -26,4 +26,8 @@ This verifies native GNSS status and location updates in the reported airplane-m
 
 ## Milestone 4 — offline saved waypoints
 
-The project owner reported that all requested Samsung A16 device tests passed. The requested checklist covered airplane-mode save, force-close and relaunch persistence, waypoint details and editing, confirmed deletion, stale-location rejection, and displaying high reported inaccuracy without blocking a save. This is a user report; the test date, APK build ID, Android version, individual readings, and screenshots were not supplied. Milestone 5 has not been physically tested.
+The project owner reported that all requested Samsung A16 device tests passed. The requested checklist covered airplane-mode save, force-close and relaunch persistence, waypoint details and editing, confirmed deletion, stale-location rejection, and displaying high reported inaccuracy without blocking a save. This is a user report; the test date, APK build ID, Android version, individual readings, and screenshots were not supplied.
+
+## Milestone 5 — tabs, guidance, and UX fixes
+
+The project owner reported that milestone 5 and its UX fixes are satisfactory on a Samsung A16. This is user-reported acceptance; individual test steps, measurements, APK build ID, Android version, and test date were not supplied. It does not verify milestone 6 route recording.

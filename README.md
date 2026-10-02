@@ -40,7 +40,7 @@ Once the workflow file is on the default branch, open **Actions → Android prev
 
 ## Dependency audit
 
-On 2026-10-02, npm installation reported 15 dependency findings (11 moderate, 4 high), including `node-forge` (high) and `uuid` (moderate) through the Expo dependency tree. No forced audit fix was applied: `npm audit fix --force` proposes downgrading Expo to 44. Recheck advisories and SDK-compatible updates before broader distribution.
+On 2026-10-02, npm installation reported 16 dependency findings (12 moderate, 4 high), including `node-forge` (high) and `uuid` (moderate) through the Expo dependency tree. No forced audit fix was applied: `npm audit fix --force` proposes downgrading Expo to 44. Recheck advisories and SDK-compatible updates before broader distribution.
 
 ## Offline waypoint device checklist
 
@@ -57,8 +57,14 @@ The owner reports all requested milestone 4 Samsung A16 checks passed. See [DEVI
 
 ## Milestone 5 device checklist
 
-On a rebuilt Samsung A16 APK, check switching among Location, Waypoints, and Satellites, back navigation from waypoint save/details, and that repeated tab switches do not duplicate location or GNSS updates. In airplane mode with Wi-Fi off and Location on, select a saved destination and confirm distance and true-north bearing update as the current location changes; compare with a known coordinate pair where practical. Confirm stale or unavailable location pauses guidance, coincident positions show no bearing, and reported accuracies remain visible. Force-close and relaunch to confirm waypoint persistence. Lock and unlock, then check fresh location and GNSS status return on their respective tabs. These milestone 5 checks have not yet been performed on a physical device.
+On a rebuilt Samsung A16 APK, check switching among Location, Waypoints, and Satellites, back navigation from waypoint save/details, and that repeated tab switches do not duplicate location or GNSS updates. In airplane mode with Wi-Fi off and Location on, select a saved destination and confirm distance and true-north bearing update as the current location changes; compare with a known coordinate pair where practical. Confirm stale or unavailable location pauses guidance, coincident positions show no bearing, and reported accuracies remain visible. Force-close and relaunch to confirm waypoint persistence. Lock and unlock, then check fresh location and GNSS status return on their respective tabs. The owner later reported milestone 5 and its UX fixes satisfactory on a Samsung A16; individual checklist results were not supplied.
 
 ## Milestone 5 UX follow-up checks
 
-On a rebuilt APK, verify text-only bottom tabs and single headers, compact measurements and satellite rows, direct access to the saved list, focused guidance and edit routes, and Info actions. Confirm a fresh 800 m accuracy reading is labelled low precision without changing the reported value or blocking a waypoint save. Check GNSS age during frequent callbacks, after lock/unlock, and after a stale callback; old counts must not appear live. These changes have not been physically verified.
+On a rebuilt APK, verify text-only bottom tabs and single headers, compact measurements and satellite rows, direct access to the saved list, focused guidance and edit routes, and Info actions. Confirm a fresh 800 m accuracy reading is labelled low precision without changing the reported value or blocking a waypoint save. Check GNSS age during frequent callbacks, after lock/unlock, and after a stale callback; old counts must not appear live. The owner reported the milestone 5 UX satisfactory on a Samsung A16; individual checks above were not supplied.
+
+## Milestone 6 build requirements and device checklist
+
+A new APK is required for the SDK 57 compatible `expo-file-system` and `expo-sharing` modules. Use the existing manual GitHub Actions release workflow and the owner's current signing credentials; no workflow or build was triggered here. The generated APK manifest must be checked for foreground location only and no background or foreground-service location permission.
+
+On the Samsung A16, with airplane mode enabled and Wi-Fi off, start a route after a fresh location; verify confirmed point count, active time, and estimated distance. Stay still to inspect jitter filtering, then move and check distance updates. Pause and resume, lock and unlock, and background/return; confirm recording pauses and requires explicit resume, and no distance crosses those segment breaks. Force-close during a recording and relaunch; confirm it is retained as interrupted/paused with no closed-time claim. Stop, name, save, reopen details, and restart to verify persistence. Export GPX through the Android share sheet while offline, inspect UTC times and segment boundaries, then cancel and confirm deletion separately. Also recheck the existing Location, Waypoints, guidance, and Satellites tabs. Milestone 6 has not been physically verified.

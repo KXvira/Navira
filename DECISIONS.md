@@ -36,3 +36,10 @@
 - Add Expo Router for three bottom tabs and focused waypoint routes. Keep location and waypoint hooks above the router screens to prevent duplicate subscriptions.
 - Observe native GNSS only while Satellites is visible and the foreground location flow is usable; its hook and foreground cleanup remain mounted in the shared provider.
 - Keep selected destination in memory and calculate straight-line guidance locally. No navigation data is added to SQLite.
+
+## Milestone 6 decisions
+
+- Reuse the existing Expo Location subscription in the root provider; keep route storage behind a separate typed SQLite repository in the existing local database.
+- Allow one unfinished route. Persist accepted points and route counters atomically, checkpoint active time every five seconds, and recover an interrupted recording paused with only committed time.
+- Use conservative movement and accuracy thresholds plus a speed sanity limit to reduce stationary jitter. Sum distance only within persisted segments; do not imply survey-grade distance.
+- Use Expo FileSystem cache and Expo Sharing for a local GPX 1.1 file. Omit reported accuracy from GPX rather than mislabel it as HDOP.

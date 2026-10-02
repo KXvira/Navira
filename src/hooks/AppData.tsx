@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { usePathname } from 'expo-router';
 import { useLocationReading } from './useLocationReading';
 import { useGnssStatus } from './useGnssStatus';
+import { useRouteRecording } from './useRouteRecording';
 import { useWaypoints } from './useWaypoints';
 import type { WaypointCapture } from '../types/waypoint';
 import { visiblePhase } from '../utils/locationDisplay';
@@ -20,7 +21,8 @@ function useAppDataValue() {
   const phase = visiblePhase(location.state, now);
   const gnssActive = pathname === '/satellites' && ['waiting', 'receiving', 'stale'].includes(location.state.phase);
   const gnss = useGnssStatus(gnssActive);
-  return { location, waypoints, now, phase, gnss, gnssActive, destinationId, setDestinationId, saveCapture, setSaveCapture };
+  const routes = useRouteRecording(location.state.reading, phase, now);
+  return { location, waypoints, routes, now, phase, gnss, gnssActive, destinationId, setDestinationId, saveCapture, setSaveCapture };
 }
 
 type AppData = ReturnType<typeof useAppDataValue>;

@@ -1,6 +1,6 @@
 # Architecture
 
-Current flow: Expo Router composes Location, Waypoints, and Satellites tabs plus focused waypoint save, detail, edit, and guidance routes. `AppDataProvider` holds location, waypoint, and GNSS hooks above the navigator so tab changes do not duplicate location subscriptions. `useLocationReading` owns foreground permission, service check, subscription lifecycle, errors, and retry. `locationService` is the only code calling Expo Location. The screen derives age and stale status with pure functions from `locationDisplay`, then renders `LocationStatus` and `Reading` cards.
+Current flow: Expo Router composes Location, Waypoints, Routes, and Satellites tabs plus focused waypoint save, detail, edit, and guidance routes. `AppDataProvider` holds location, waypoint, and GNSS hooks above the navigator so tab changes do not duplicate location subscriptions. `useLocationReading` owns foreground permission, service check, subscription lifecycle, errors, and retry. `locationService` is the only code calling Expo Location. The screen derives age and stale status with pure functions from `locationDisplay`, then renders `LocationStatus` and `Reading` cards.
 
 The subscription is removed on effect cleanup and after reported watcher errors. A retry restarts the effect and requests foreground access again. A late subscription returned after cleanup is removed immediately. Live readings remain in memory and are never transmitted. Coordinates are persisted only when the user saves a waypoint.
 
@@ -33,3 +33,9 @@ The Waypoints tab and focused save/detail/edit routes own waypoint presentation.
 ## GNSS observation clock
 
 Kotlin emits `observedAtMs` from `System.currentTimeMillis()` and a separate elapsed-realtime value. The bridge preserves both. `stateFromGnssEvent` keeps the native wall-clock observation timestamp in hook state; the UI compares it to the JavaScript wall-clock `now`. A callback slightly newer than the last one-second UI tick displays age zero; an invalid or substantially future timestamp has no valid age and cannot display as receiving. Old native observations become stale after 15 seconds even if their events reach JavaScript late. Lifecycle pauses clear the snapshot.
+
+## Milestone 6 route recording
+
+`useRouteRecording` lives in `AppDataProvider` above all tabs and consumes the existing `useLocationReading` result. It serializes route writes, handles AppState foreground exit, halts on storage failures, and updates visible counters only from confirmed repository results. `routeRepository.ts` owns the typed SQLite schema and atomic point/counter writes in `navira.db`; waypoint tables are untouched. `recordingState.ts` and `routeSampling.ts` contain pure transition and filtering rules. The Routes tab and focused recording/detail routes contain presentation only.
+
+Route rows store active-time checkpoints. Startup recovery changes a still-recording row to paused/interrupted while keeping only committed elapsed time. Pause/resume and observed callback gaps create segment boundaries. `gpx.ts` produces GPX text without horizontal-accuracy HDOP claims; `routeExport.ts` writes a cache file and invokes Expo Sharing. There is no route network, map, or background task.
