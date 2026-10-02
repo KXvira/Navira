@@ -2,7 +2,7 @@
 
 Current one-screen flow: `App.tsx` composes `LocationScreen`. `useLocationReading` owns foreground permission, service check, subscription lifecycle, errors, and retry. `locationService` is the only code calling Expo Location. The screen derives age and stale status with pure functions from `locationDisplay`, then renders `LocationStatus` and `Reading` cards.
 
-The subscription is removed on effect cleanup and after reported watcher errors. A retry restarts the effect and requests foreground access again. A late subscription returned after cleanup is removed immediately. State is in memory only; readings are neither persisted nor transmitted.
+The subscription is removed on effect cleanup and after reported watcher errors. A retry restarts the effect and requests foreground access again. A late subscription returned after cleanup is removed immediately. Live readings remain in memory and are never transmitted. Coordinates are persisted only when the user saves a waypoint.
 
 Future navigation, maps, or platform GNSS details require separate design and implementation. They are not part of this data flow.
 
@@ -19,3 +19,9 @@ The module removes both its GPS request and status callback on background, liste
 ## Release packaging
 
 The GitHub Actions manual workflow is the primary Android APK builder. It runs CNG prebuild then `:app:assembleRelease`. `plugins/withNaviraReleaseSigning.js` reconfigures the generated release variant to require the EAS-origin keystore supplied through GitHub Actions secrets. The previous `eas.json` preview profile remains only for credential lookup or a deliberate alternate build; it is not used by the GitHub workflow.
+
+## Offline waypoints
+
+`WaypointManager` owns the save, list, detail, edit, and delete presentation. Opening the save form copies the current Expo reading into an immutable `WaypointCapture`; later location updates do not alter it. Submission checks that captured timestamp against the shared 15-second freshness rule.
+
+`useWaypoints` owns loading and write state. It depends on the `WaypointRepository` contract rather than SQLite details. `waypointRepository.ts` is the persistence boundary: it initializes `navira.db`, performs parameterized CRUD, generates UUIDv4 identifiers with Expo Crypto, and validates every loaded row. Invalid rows are counted and left untouched so the UI can report them without data loss. No account, backend, analytics, or network path is involved.

@@ -31,6 +31,8 @@ jobs:
         run: npx expo lint
       - name: TypeScript
         run: npx tsc --noEmit
+      - name: Waypoint tests
+        run: npm run test:waypoints
       - name: Expo Doctor
         run: npx expo-doctor
 

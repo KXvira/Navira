@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 import { GnssDiagnostics } from '../components/GnssDiagnostics';
 import { LocationStatus } from '../components/LocationStatus';
 import { Reading } from '../components/Reading';
+import { WaypointManager } from '../components/WaypointManager';
 import { useLocationReading } from '../hooks/useLocationReading';
 import { useGnssStatus } from '../hooks/useGnssStatus';
 import { formatMeasurement, formatSpeed, readingAgeSeconds, visiblePhase } from '../utils/locationDisplay';
@@ -36,6 +37,7 @@ export function LocationScreen() {
       <Text style={styles.footer}>
         Readings come from Android location services. Expo Location does not establish that they came exclusively from GNSS. Coordinates stay on this device.
       </Text>
+      <WaypointManager reading={state.reading} locationUsable={phase === 'receiving'} now={now} />
     </ScrollView>
   );
 }

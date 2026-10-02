@@ -22,3 +22,11 @@
 - Require precise foreground permission for GNSS callbacks. Approximate-only access may still allow Expo location readings but cannot power these diagnostics.
 - Keep `usedInFix` tied to Android's most recent GNSS fix, never to the latest Expo location reading. Treat zero satellites and zero used flags as real values.
 - Build with a manual GitHub Actions Gradle release workflow. CNG prebuild regenerates Android; a config plugin reapplies release signing and fails if release secrets are absent. The key must match the previously installed EAS APK. No Expo token is needed for this workflow.
+
+## Milestone 4 decisions
+
+- Use the SDK 57 compatible `expo-sqlite` module. It persists across restarts, supports parameterized row-level writes, is included in Expo Go, and lets validation isolate malformed records without overwriting or deleting them.
+- Put SQLite behind `WaypointRepository`; UI and hooks work with typed waypoint models and never issue queries.
+- Use `expo-crypto` UUIDv4 identifiers. IDs remain stable when names and notes change.
+- Snapshot the Expo reading when the save form opens, then reuse the location freshness threshold on submission. Report accuracy without introducing a blocking cutoff.
+- Keep waypoint CRUD on the existing one-screen app. Navigation, maps, import/export, routes, bearing, distance, and averaging remain outside this milestone.

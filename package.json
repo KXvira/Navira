@@ -4,7 +4,9 @@
   "main": "index.ts",
   "dependencies": {
     "expo": "~57.0.26",
+    "expo-crypto": "~57.0.3",
     "expo-location": "~57.0.20",
+    "expo-sqlite": "~57.0.3",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-native": "0.86.3"
@@ -20,7 +22,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test:waypoints": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-waypoint-tests tests/waypointValidation.test.ts src/utils/waypointValidation.ts src/utils/locationDisplay.ts src/types/waypoint.ts src/types/location.ts && node /tmp/navira-waypoint-tests/tests/waypointValidation.test.js"
   },
   "private": true
 }

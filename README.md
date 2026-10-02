@@ -1,6 +1,6 @@
 # Navira — Offline GNSS Lab
 
-Navira displays foreground location readings from Expo Location and, in a rebuilt Android APK, separate native GNSS diagnostics. The location screen passed owner testing on a Samsung A16. The owner also verified fresh location updates in airplane mode with Wi-Fi off in a milestone 2 preview APK; see [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md). The new GNSS diagnostics and GitHub-built APK have **not** been tested on a phone. Satellite status cannot prove that an Expo location reading came exclusively from GNSS.
+Navira displays foreground location readings from Expo Location and, in a rebuilt Android APK, separate native GNSS diagnostics. The location screen passed owner testing on a Samsung A16. The owner also verified fresh location updates in airplane mode with Wi-Fi off in a milestone 2 preview APK; see [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md). The GitHub-built APK and native GNSS diagnostics passed the owner-reported Samsung A16 tests documented in the device record. Satellite status cannot prove that an Expo location reading came exclusively from GNSS.
 
 ## Development
 
@@ -41,3 +41,16 @@ Once the workflow file is on the default branch, open **Actions → Android prev
 ## Dependency audit
 
 On 2026-10-02, `npm audit` reported 12 transitive findings (8 moderate, 4 high), including `node-forge` (high) and `uuid` (moderate) through the Expo dependency tree. No forced audit fix was applied: `npm audit fix --force` proposes downgrading Expo to 44. Recheck advisories and SDK-compatible updates before broader distribution.
+
+## Offline waypoint device checklist
+
+Milestone 4 adds local SQLite storage through the SDK 57 compatible `expo-sqlite` module and UUIDv4 IDs through `expo-crypto`. Both modules are included in Expo Go, but the release APK must be rebuilt to include and validate the milestone with the project's native configuration.
+
+1. Enable airplane mode with Wi-Fi off, keep Android Location on, wait for a fresh reading, and save a named waypoint. Confirm capture age and reported accuracy are shown before saving.
+2. Force-close and relaunch Navira. Confirm the waypoint and all captured measurements persist.
+3. Open details, rename it, edit the optional note, save, and restart again to confirm the edits persist without changing its coordinates or capture time.
+4. Delete it, cancel the first confirmation to verify it remains, then confirm deletion and restart to verify it stays deleted.
+5. Open the save form on a fresh reading, wait at least 15 seconds without a new reading or disable Location, and confirm saving is rejected without substituting newer coordinates.
+6. Repeat with a high reported accuracy value and confirm the value is visible but does not block saving.
+
+No milestone 4 device result has been reported yet.
