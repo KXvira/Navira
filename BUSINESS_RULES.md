@@ -17,3 +17,10 @@ The diagnostics section starts only after Expo foreground location access enters
 - Saved details preserve nullable altitude and horizontal accuracy. Renaming and note edits never change captured coordinates or capture time.
 - Delete requires confirmation. Malformed stored rows are reported and retained rather than silently deleted.
 - Waypoints stay in local app storage. There is no account, synchronization, backend, analytics, map, route recording, position averaging, or background tracking.
+
+## Milestone 5 guidance
+
+- A saved waypoint may be selected as an in-memory destination. Selection does not mutate its SQLite record.
+- Distance is straight-line geographic distance. Bearing is the initial great-circle course clockwise from true north, with an eight-point cardinal label. It is not phone-relative and supplies no road or walking route.
+- Guidance is shown only with a fresh current Expo reading; stale, unavailable, denied, and disabled states show a paused message. Coincident positions have no bearing.
+- Current and saved horizontal accuracies remain visible as reported estimates. No exact arrival threshold is claimed.

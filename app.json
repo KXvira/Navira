@@ -44,7 +44,8 @@
           "isAndroidForegroundServiceEnabled": false
         }
       ],
-      "./plugins/withNaviraReleaseSigning"
+      "./plugins/withNaviraReleaseSigning",
+      "expo-router"
     ],
     "extra": {
       "eas": {

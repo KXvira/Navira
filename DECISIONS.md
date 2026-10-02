@@ -30,3 +30,9 @@
 - Use `expo-crypto` UUIDv4 identifiers. IDs remain stable when names and notes change.
 - Snapshot the Expo reading when the save form opens, then reuse the location freshness threshold on submission. Report accuracy without introducing a blocking cutoff.
 - Keep waypoint CRUD on the existing one-screen app. Navigation, maps, import/export, routes, bearing, distance, and averaging remain outside this milestone.
+
+## Milestone 5 decisions
+
+- Add Expo Router for three bottom tabs and focused waypoint routes. Keep location and waypoint hooks above the router screens to prevent duplicate subscriptions.
+- Observe native GNSS only while Satellites is visible and the foreground location flow is usable; its hook and foreground cleanup remain mounted in the shared provider.
+- Keep selected destination in memory and calculate straight-line guidance locally. No navigation data is added to SQLite.

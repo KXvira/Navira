@@ -11,7 +11,7 @@ npm ci
 npx expo start --tunnel
 ```
 
-Expo Go still runs the location screen, but its GNSS section shows that the custom native module is unavailable. Native module changes require a new Android binary; Metro reloads JavaScript only. Local checks: `npx expo lint`, `npx tsc --noEmit`, and `npx expo-doctor`.
+Expo Go still runs the location and waypoint screens, but the Satellites tab shows that the custom native module is unavailable. Native module changes require a new Android binary; Metro reloads JavaScript only. Local checks: `npx expo lint`, `npx tsc --noEmit`, and `npx expo-doctor`.
 
 ## Android release APK: GitHub Actions
 
@@ -40,7 +40,7 @@ Once the workflow file is on the default branch, open **Actions → Android prev
 
 ## Dependency audit
 
-On 2026-10-02, `npm audit` reported 12 transitive findings (8 moderate, 4 high), including `node-forge` (high) and `uuid` (moderate) through the Expo dependency tree. No forced audit fix was applied: `npm audit fix --force` proposes downgrading Expo to 44. Recheck advisories and SDK-compatible updates before broader distribution.
+On 2026-10-02, npm installation reported 15 dependency findings (11 moderate, 4 high), including `node-forge` (high) and `uuid` (moderate) through the Expo dependency tree. No forced audit fix was applied: `npm audit fix --force` proposes downgrading Expo to 44. Recheck advisories and SDK-compatible updates before broader distribution.
 
 ## Offline waypoint device checklist
 
@@ -53,4 +53,8 @@ Milestone 4 adds local SQLite storage through the SDK 57 compatible `expo-sqlite
 5. Open the save form on a fresh reading, wait at least 15 seconds without a new reading or disable Location, and confirm saving is rejected without substituting newer coordinates.
 6. Repeat with a high reported accuracy value and confirm the value is visible but does not block saving.
 
-No milestone 4 device result has been reported yet.
+The owner reports all requested milestone 4 Samsung A16 checks passed. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
+
+## Milestone 5 device checklist
+
+On a rebuilt Samsung A16 APK, check switching among Location, Waypoints, and Satellites, back navigation from waypoint save/details, and that repeated tab switches do not duplicate location or GNSS updates. In airplane mode with Wi-Fi off and Location on, select a saved destination and confirm distance and true-north bearing update as the current location changes; compare with a known coordinate pair where practical. Confirm stale or unavailable location pauses guidance, coincident positions show no bearing, and reported accuracies remain visible. Force-close and relaunch to confirm waypoint persistence. Lock and unlock, then check fresh location and GNSS status return on their respective tabs. These milestone 5 checks have not yet been performed on a physical device.

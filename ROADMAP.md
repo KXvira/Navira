@@ -14,8 +14,12 @@ The owner installed a GitHub Actions release APK on a Samsung A16. In airplane m
 
 The owner also reported passing lock/unlock, Location off/on, and precise-permission revoke/restore checks on this APK. Zero-satellite and explicit duplicate-registration/cleanup observations remain unreported. Android GNSS status confirms satellite use for its latest GNSS fix; it does not establish the source of each separate Expo Location reading.
 
-## Milestone 4 — offline saved waypoints (implemented; device validation pending)
+## Milestone 4 — offline saved waypoints (device verified by owner report)
 
 The app can capture a named immutable snapshot from a fresh Expo location, persist it locally in SQLite, list and show details, edit its name and note, and delete it after confirmation. The UI reports storage failures and retained malformed rows; low reported accuracy remains visible without blocking saves.
 
-Acceptance requires airplane-mode save, restart persistence, detail and edit checks, confirmed deletion, and stale-location rejection on a rebuilt APK. Maps, routes, distance/bearing, background tracking, and position averaging remain planned work rather than completed features.
+The owner reports that all requested Samsung A16 checks passed: airplane-mode save, restart persistence, details and editing, confirmed deletion, and stale-location rejection. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
+
+## Milestone 5 — local straight-line waypoint guidance and tabs (implemented; device validation pending)
+
+Location, Waypoints, and Satellites are separate tabs. Waypoint save and detail/edit use focused routes. Selecting a destination shows local straight-line distance and initial true-north bearing only while the current location is fresh. No map, route, compass alignment, background tracking, or position averaging is included.

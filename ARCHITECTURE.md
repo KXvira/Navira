@@ -1,10 +1,10 @@
 # Architecture
 
-Current one-screen flow: `App.tsx` composes `LocationScreen`. `useLocationReading` owns foreground permission, service check, subscription lifecycle, errors, and retry. `locationService` is the only code calling Expo Location. The screen derives age and stale status with pure functions from `locationDisplay`, then renders `LocationStatus` and `Reading` cards.
+Current flow: Expo Router composes Location, Waypoints, and Satellites tabs plus focused waypoint save and detail routes. `AppDataProvider` holds location, waypoint, and GNSS hooks above the navigator so tab changes do not duplicate location subscriptions. `useLocationReading` owns foreground permission, service check, subscription lifecycle, errors, and retry. `locationService` is the only code calling Expo Location. The screen derives age and stale status with pure functions from `locationDisplay`, then renders `LocationStatus` and `Reading` cards.
 
 The subscription is removed on effect cleanup and after reported watcher errors. A retry restarts the effect and requests foreground access again. A late subscription returned after cleanup is removed immediately. Live readings remain in memory and are never transmitted. Coordinates are persisted only when the user saves a waypoint.
 
-Future navigation, maps, or platform GNSS details require separate design and implementation. They are not part of this data flow.
+Waypoint guidance is calculated locally in `src/utils/guidance.ts`; no network or mapping service is involved.
 
 ## Android preview packaging
 
@@ -22,6 +22,10 @@ The GitHub Actions manual workflow is the primary Android APK builder. It runs C
 
 ## Offline waypoints
 
-`WaypointManager` owns the save, list, detail, edit, and delete presentation. Opening the save form copies the current Expo reading into an immutable `WaypointCapture`; later location updates do not alter it. Submission checks that captured timestamp against the shared 15-second freshness rule.
+The Waypoints tab and focused save/detail routes own waypoint presentation. Opening the save form copies the current Expo reading into an immutable `WaypointCapture`; later location updates do not alter it. Submission checks that captured timestamp against the shared 15-second freshness rule.
 
 `useWaypoints` owns loading and write state. It depends on the `WaypointRepository` contract rather than SQLite details. `waypointRepository.ts` is the persistence boundary: it initializes `navira.db`, performs parameterized CRUD, generates UUIDv4 identifiers with Expo Crypto, and validates every loaded row. Invalid rows are counted and left untouched so the UI can report them without data loss. No account, backend, analytics, or network path is involved.
+
+## Milestone 5 lifecycle and guidance
+
+`AppDataProvider` stays mounted above Expo Router tabs and owns one foreground Expo Location subscription and one waypoint store. GNSS monitoring uses the Satellites route as its visibility signal and `useGnssStatus` still stops on app background. Switching tabs does not remount the hook; leaving Satellites stops GNSS monitoring. `straightLineGuidance` uses a local haversine distance and initial great-circle bearing normalized clockwise from true north. UI computes guidance only for fresh receiving location. A coincident pair has no bearing. Destination choice is in memory; SQLite waypoint rows remain unchanged.
