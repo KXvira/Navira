@@ -81,7 +81,7 @@ class NaviraGnssModule : Module() {
       foreground = false
       stopMonitoring()
     }
-    OnAppContextDestroys {
+    OnDestroy {
       requested = false
       stopMonitoring()
     }
