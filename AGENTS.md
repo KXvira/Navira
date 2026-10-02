@@ -1,41 +1,13 @@
-This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+# Navira working conventions
 
-## Expo has changed — do not trust your training data
+Navira is an Expo SDK 57, React Native, TypeScript location app. Keep changes mobile-first, cross-platform, and small. App.tsx composes the app; put screen UI in `src/screens`, reusable views in `src/components`, lifecycle state in `src/hooks`, Expo calls in `src/services`, models in `src/types`, and pure display rules in `src/utils`.
 
-Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
+Before changing Expo, EAS, or React Native APIs, check the installed Expo major version and the matching versioned docs at https://docs.expo.dev/versions/v57.0.0/ and follow links from https://docs.expo.dev/llms.txt. Use `npx expo install` for Expo-compatible packages; this project has `package-lock.json`, not Bun. Do not hand-edit generated native directories. Use Expo Router if navigation is added; the current app has one screen and no router dependency.
 
-1. Read the major version of the `expo` package in `package.json`.
-2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
-3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
+Keep foreground location only. Do not send or persist coordinates. Distinguish missing measurements from zero and GNSS claims from Android location service readings. Preserve the location cards and subscription flow already tested on a Samsung A16.
 
-## Commands
+Before finishing code changes, run `npx tsc --noEmit`, `npx expo lint`, and `npx expo-doctor`. If a lint command requires new tooling, report that clearly. Do not use `npm audit fix --force`; its proposed Expo downgrade is incompatible with this project. Document what needs physical-device testing without claiming device tests you did not perform.
 
-Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
+Milestone 1's modular app behavior passed owner testing on a Samsung A16. Preserve its UI and location lifecycle during build work. The milestone 2 preview profile is in `eas.json` and its APK passed device testing; the EAS project is linked in `app.json`. The owner controls EAS signing credentials. Run Expo config introspection to check permissions and verify the final APK manifest when available. The owner reported that the preview APK produced fresh updates on a Samsung A16 with airplane mode enabled and Wi-Fi off; see DEVICE_TEST_RECORD.md. Treat offline operation as verified for those conditions only. The test cannot establish GNSS-only provenance.
 
-```bash
-npx expo install <package>  # ALWAYS use instead of npm/yarn/pnpm/bun add — resolves SDK-compatible versions
-npx expo start              # start the dev server
-npx expo lint               # lint
-npx tsc --noEmit            # typecheck
-npx expo-doctor             # diagnose dependency and config issues
-npx expo install --fix      # fix incompatible package versions
-```
-
-Run lint and typecheck before declaring any task done.
-
-## Navigation & Routing
-
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
-- Docs: https://docs.expo.dev/router/introduction.md
-
-## Building with EAS
-
-Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
-Docs: https://docs.expo.dev/eas/index.md
-
-## Rules
-
-- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
-- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
-- Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+Milestone 3 uses `modules/navira-gnss` and a manual GitHub Actions Gradle workflow. Keep GNSS status independent of Expo location readings. Android release signing is defined in `plugins/withNaviraReleaseSigning.js`; never edit generated `android/` by hand or allow debug signing for release. GitHub Actions secrets hold the existing EAS keystore and signing values. Do not commit or print credentials. The Git remote was unset when the workflow was added; do not push or trigger it without user direction.

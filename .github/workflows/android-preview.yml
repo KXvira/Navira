@@ -1,0 +1,107 @@
+name: Android preview APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npx expo lint
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: Expo Doctor
+        run: npx expo-doctor
+
+      - name: Require release signing secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.NAVIRA_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.NAVIRA_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.NAVIRA_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.NAVIRA_KEY_PASSWORD }}
+        run: |
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing signing secret for $name"
+              exit 1
+            fi
+          done
+
+      - name: Generate Android project
+        env:
+          EXPO_NO_GIT_STATUS: '1'
+        run: npx expo prebuild --platform android --no-install --clean
+
+      - name: Verify generated configuration and local module
+        run: |
+          grep -Fq "applicationId 'ke.co.xvira.navira'" android/app/build.gradle
+          grep -Fq 'signingConfig signingConfigs.naviraRelease' android/app/build.gradle
+          npx expo-modules-autolinking resolve --platform android --json > "$RUNNER_TEMP/autolinking.json"
+          node -e "const x=require(process.argv[1]); if (!x.modules.some(m=>m.packageName==='navira-gnss')) process.exit(1)" "$RUNNER_TEMP/autolinking.json"
+
+      - name: Restore release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.NAVIRA_KEYSTORE_BASE64 }}
+        run: |
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/navira-release.jks"
+          test -s "$RUNNER_TEMP/navira-release.jks"
+
+      - name: Assemble signed release APK
+        working-directory: android
+        env:
+          NAVIRA_KEYSTORE_PATH: ${{ runner.temp }}/navira-release.jks
+          NAVIRA_KEYSTORE_PASSWORD: ${{ secrets.NAVIRA_KEYSTORE_PASSWORD }}
+          NAVIRA_KEY_ALIAS: ${{ secrets.NAVIRA_KEY_ALIAS }}
+          NAVIRA_KEY_PASSWORD: ${{ secrets.NAVIRA_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --no-daemon
+
+      - name: Verify APK and bundled JavaScript
+        run: |
+          apk_path="$(find android/app/build/outputs/apk/release -maxdepth 1 -name '*.apk' -print -quit)"
+          test -n "$apk_path"
+          sdk_root="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          "$sdk_root/build-tools/36.0.0/apksigner" verify "$apk_path"
+          "$sdk_root/build-tools/36.0.0/aapt" dump badging "$apk_path" | grep -F "package: name='ke.co.xvira.navira'" > /dev/null
+          "$sdk_root/build-tools/36.0.0/aapt" dump permissions "$apk_path" > "$RUNNER_TEMP/navira-permissions.txt"
+          grep -Fq "android.permission.ACCESS_COARSE_LOCATION" "$RUNNER_TEMP/navira-permissions.txt"
+          grep -Fq "android.permission.ACCESS_FINE_LOCATION" "$RUNNER_TEMP/navira-permissions.txt"
+          if grep -Eq 'android.permission.(ACCESS_BACKGROUND_LOCATION|FOREGROUND_SERVICE|FOREGROUND_SERVICE_LOCATION)' "$RUNNER_TEMP/navira-permissions.txt"; then
+            echo '::error::Unexpected background or foreground-service location permission in APK'
+            exit 1
+          fi
+          unzip -l "$apk_path" | grep -F 'assets/index.android.bundle' > /dev/null
+          mkdir -p artifacts
+          cp "$apk_path" artifacts/navira-preview.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: navira-preview-apk
+          path: artifacts/navira-preview.apk
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Remove keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/navira-release.jks"
