@@ -6,10 +6,12 @@ import { AppDataProvider } from '../src/hooks/AppData';
 export default function RootLayout() {
   return <SafeAreaProvider><AppDataProvider>
     <StatusBar style="light" />
-    <Stack screenOptions={{ headerStyle: { backgroundColor: '#08131f' }, headerTintColor: '#ffffff', contentStyle: { backgroundColor: '#08131f' } }}>
+    <Stack screenOptions={{ headerStyle: { backgroundColor: '#08131f' }, headerTintColor: '#fff', headerTitleStyle: { fontSize: 20, fontWeight: '700' }, contentStyle: { backgroundColor: '#08131f' } }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="guidance" options={{ title: 'Guidance' }} />
       <Stack.Screen name="waypoint/new" options={{ title: 'Save waypoint' }} />
-      <Stack.Screen name="waypoint/[id]" options={{ title: 'Waypoint details' }} />
+      <Stack.Screen name="waypoint/[id]" options={{ title: 'Waypoint' }} />
+      <Stack.Screen name="waypoint/edit" options={{ title: 'Edit waypoint' }} />
     </Stack>
   </AppDataProvider></SafeAreaProvider>;
 }

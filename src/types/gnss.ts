@@ -31,5 +31,5 @@ export type GnssEvent =
 export type GnssState = {
   phase: GnssPhase;
   snapshot: GnssSnapshot | null;
-  receivedAtMs: number | null;
+  observedAtMs: number | null;
 };

@@ -20,7 +20,7 @@ export default function NewWaypointScreen() {
     if (phase !== 'receiving' || !isCaptureFresh(saveCapture, Date.now())) { setError('This captured location is stale or location access is unavailable. Return to Waypoints and capture a fresh location.'); return; }
     if (await waypoints.create(saveCapture, draft)) { setSaveCapture(null); router.back(); }
   }
-  return <SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"><Text style={styles.title}>Save captured location</Text>
+  return <SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
     {saveCapture ? <><View style={styles.panel}><Text style={styles.text}>Capture age: {readingAgeSeconds(saveCapture.capturedAt, now) ?? 'Unavailable'} seconds</Text><Text style={styles.text}>Reported horizontal accuracy: {formatMeasurement(saveCapture.horizontalAccuracy, 1, ' m')}</Text><Text style={styles.muted}>The coordinates stay fixed while this form is open. Reported accuracy does not block saving.</Text></View>
       <WaypointFields draft={draft} onChange={setDraft} disabled={waypoints.writing} />
       {!usable && <Text style={styles.warning}>The captured location is stale or unavailable. Return and capture a fresh location.</Text>}
@@ -29,4 +29,4 @@ export default function NewWaypointScreen() {
     <ActionButton label="Cancel" onPress={() => { setSaveCapture(null); router.back(); }} disabled={waypoints.writing} />
   </ScrollView></SafeAreaView>;
 }
-const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { padding: 24, paddingBottom: 48 }, title: { color: '#fff', fontSize: 27, fontWeight: '700' }, panel: { backgroundColor: '#132334', borderRadius: 14, padding: 16, marginTop: 18 }, text: { color: '#fff', lineHeight: 24 }, muted: { color: '#a9bed0', lineHeight: 21, marginTop: 8 }, warning: { color: '#f4d7a1', lineHeight: 21, marginTop: 14 }, error: { color: '#ffb8b8', lineHeight: 21, marginTop: 14 } });
+const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { padding: 24, paddingBottom: 48 }, panel: { backgroundColor: '#132334', borderRadius: 14, padding: 16, marginTop: 18 }, text: { color: '#fff', lineHeight: 24 }, muted: { color: '#a9bed0', lineHeight: 21, marginTop: 8 }, warning: { color: '#f4d7a1', lineHeight: 21, marginTop: 14 }, error: { color: '#ffb8b8', lineHeight: 21, marginTop: 14 } });

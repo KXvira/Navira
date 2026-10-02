@@ -1,0 +1,13 @@
+import { GNSS_STALE_AFTER_MS, gnssAgeSeconds, stateFromGnssEvent, visibleGnssPhase } from '../src/utils/gnssDisplay';
+import type { GnssState } from '../src/types/gnss';
+const assert = (condition: boolean, message: string) => { if (!condition) throw new Error(message); };
+const timestamp = 1_800_000_000_000;
+const snapshot = { observedAtMs: timestamp, observedElapsedRealtimeMs: 1234, reportedCount: 2, usedInFixCount: 1, satellites: [] };
+const state: GnssState = { phase: 'receiving', snapshot, observedAtMs: timestamp };
+assert(gnssAgeSeconds(timestamp, timestamp - 500) === 0, 'callback newer than last UI tick must show age zero');
+assert(visibleGnssPhase(state, timestamp - 500) === 'receiving', 'small UI tick skew remains receiving');
+assert(gnssAgeSeconds(timestamp, timestamp + 5_100) === 5, 'age uses native observation time');
+assert(visibleGnssPhase(state, timestamp + GNSS_STALE_AFTER_MS) === 'stale', 'retained old snapshot must become stale');
+assert(visibleGnssPhase(state, timestamp - 3_000) === 'stale', 'large future clock mismatch is invalid');
+assert(gnssAgeSeconds(Number.NaN, timestamp) === null, 'invalid native time has no age');
+assert(stateFromGnssEvent({ state: 'receiving', ...snapshot }).observedAtMs === timestamp, 'bridge observation time must be retained');

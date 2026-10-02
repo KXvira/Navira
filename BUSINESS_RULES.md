@@ -24,3 +24,9 @@ The diagnostics section starts only after Expo foreground location access enters
 - Distance is straight-line geographic distance. Bearing is the initial great-circle course clockwise from true north, with an eight-point cardinal label. It is not phone-relative and supplies no road or walking route.
 - Guidance is shown only with a fresh current Expo reading; stale, unavailable, denied, and disabled states show a paused message. Coincident positions have no bearing.
 - Current and saved horizontal accuracies remain visible as reported estimates. No exact arrival threshold is claimed.
+
+## Milestone 5 UI and GNSS freshness
+
+- Location update age and reported horizontal accuracy are independent. A fresh update above 100 m reported accuracy is labelled low precision and shown in amber; the reading and waypoint save eligibility are unchanged.
+- GNSS age and stale phase use Android's emitted wall-clock observation timestamp. A small UI tick offset is displayed as zero seconds; an invalid or old observation cannot be presented as live.
+- The Waypoints tab uses a compact destination summary. Full guidance and waypoint editing use separate routes.

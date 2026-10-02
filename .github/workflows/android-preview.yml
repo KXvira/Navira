@@ -33,6 +33,8 @@ jobs:
         run: npx tsc --noEmit
       - name: Waypoint tests
         run: npm run test:waypoints
+      - name: Guidance and display tests
+        run: npm run test:guidance && npm run test:gnss && npm run test:accuracy
       - name: Expo Doctor
         run: npx expo-doctor
 

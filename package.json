@@ -33,7 +33,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test:waypoints": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-waypoint-tests tests/waypointValidation.test.ts src/utils/waypointValidation.ts src/utils/locationDisplay.ts src/types/waypoint.ts src/types/location.ts && node /tmp/navira-waypoint-tests/tests/waypointValidation.test.js",
-    "test:guidance": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-guidance-tests tests/guidance.test.ts src/utils/guidance.ts && node /tmp/navira-guidance-tests/tests/guidance.test.js"
+    "test:guidance": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-guidance-tests tests/guidance.test.ts src/utils/guidance.ts && node /tmp/navira-guidance-tests/tests/guidance.test.js",
+    "test:gnss": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-gnss-tests tests/gnssDisplay.test.ts src/utils/gnssDisplay.ts src/types/gnss.ts && node /tmp/navira-gnss-tests/tests/gnssDisplay.test.js",
+    "test:accuracy": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-accuracy-tests tests/accuracyDisplay.test.ts src/utils/accuracyDisplay.ts && node /tmp/navira-accuracy-tests/tests/accuracyDisplay.test.js"
   },
   "private": true
 }

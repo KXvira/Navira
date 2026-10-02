@@ -58,3 +58,7 @@ The owner reports all requested milestone 4 Samsung A16 checks passed. See [DEVI
 ## Milestone 5 device checklist
 
 On a rebuilt Samsung A16 APK, check switching among Location, Waypoints, and Satellites, back navigation from waypoint save/details, and that repeated tab switches do not duplicate location or GNSS updates. In airplane mode with Wi-Fi off and Location on, select a saved destination and confirm distance and true-north bearing update as the current location changes; compare with a known coordinate pair where practical. Confirm stale or unavailable location pauses guidance, coincident positions show no bearing, and reported accuracies remain visible. Force-close and relaunch to confirm waypoint persistence. Lock and unlock, then check fresh location and GNSS status return on their respective tabs. These milestone 5 checks have not yet been performed on a physical device.
+
+## Milestone 5 UX follow-up checks
+
+On a rebuilt APK, verify text-only bottom tabs and single headers, compact measurements and satellite rows, direct access to the saved list, focused guidance and edit routes, and Info actions. Confirm a fresh 800 m accuracy reading is labelled low precision without changing the reported value or blocking a waypoint save. Check GNSS age during frequent callbacks, after lock/unlock, and after a stale callback; old counts must not appear live. These changes have not been physically verified.
