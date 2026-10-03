@@ -30,3 +30,24 @@ equal(routeGeometry(kitchen).lines.features.length, 1);
 equal(routeGeometry(kitchen).lines.features[0].geometry.coordinates.length, 7);
 equal(Object.keys(visibleRoutePoints({ kitchen, other }, 'kitchen')), ['kitchen']);
 equal(Object.keys(visibleRoutePoints({ kitchen, other })), ['kitchen', 'other']);
+
+import { accuracyGeometry, displaySegments } from '../src/utils/mapCues';
+const split = [
+  point(1, 0, 1, 'low-precision'), point(2, 0, 2, 'anchor'),
+  point(3, 0, 3, 'counted'), point(4, 0, 4, 'spike'),
+  point(5, 0, 5, 'anchor'), point(6, 0, 6, 'counted'),
+  point(7, 1, 7, 'anchor'), point(8, 2, 8, 'missing-accuracy'),
+];
+const stretches = displaySegments([...split].reverse());
+equal(stretches.map((s) => [s.index, s.start.id, s.finish.id]), [[1, 2, 3], [2, 5, 6], [3, 7, 7]]);
+equal(routeGeometry(split).lines.features.map((f) => f.geometry.coordinates), [[[2, 1], [3, 1]], [[5, 1], [6, 1]]]);
+equal(displaySegments([]), []);
+equal(displaySegments([point(1, 0, 1, 'anchor')]).map((s) => [s.start.id, s.finish.id]), [[1, 1]]);
+const circle = accuracyGeometry([36, 0], 1000).features[0].geometry.coordinates[0];
+const north = circle[0];
+const east = circle[16];
+if (Math.abs((north[1] - 0) * 111195 - 1000) > 2 || Math.abs((east[0] - 36) * 111195 - 1000) > 2) throw new Error('Accuracy geometry must use metre radius');
+equal(accuracyGeometry([36, 0], null).features.length, 0);
+equal(accuracyGeometry([36, 0], 0).features.length, 0);
+const coincident = displaySegments([point(10, 0, 9, 'anchor'), point(11, 0, 9, 'counted')]);
+equal([coincident[0].start.id, coincident[0].finish.id], [10, 11]);
