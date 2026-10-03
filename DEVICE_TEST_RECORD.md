@@ -31,3 +31,15 @@ The project owner reported that all requested Samsung A16 device tests passed. T
 ## Milestone 5 — tabs, guidance, and UX fixes
 
 The project owner reported that milestone 5 and its UX fixes are satisfactory on a Samsung A16. This is user-reported acceptance; individual test steps, measurements, APK build ID, Android version, and test date were not supplied. It does not verify milestone 6 route recording.
+
+## Milestone 6 — foreground route recording
+
+The project owner reports that the milestone 6 app works on a device and accepts its behavior. The owner also reports that location accuracy sometimes degrades. This is user-reported acceptance, not an independent device test. The device model for this milestone, APK build ID, Android version, and numeric accuracy series were not supplied.
+
+### Owner-exported GPX inspection
+
+The owner supplied `ignore/8d7bc6d6-a45b-49d5-87b4-43b07251af2d.gpx`. Local XML parsing found a GPX 1.1 document with creator `Navira`, one named track, one `<trkseg>`, and seven `<trkpt>` elements. Every point has valid latitude/longitude attributes, an elevation element, and a UTC timestamp. Timestamps increase strictly from 2026-10-03 15:48:24.970 UTC to 15:49:51.967 UTC; adjacent intervals range from 11.999 to 17.998 seconds. The straight-line sum of adjacent points within the segment is about 72.1 m, with a largest individual leg of about 12.8 m. This is a calculation from exported positions, not verified travel distance or accuracy.
+
+No pause or gap boundary appears in this file, so it cannot verify multi-segment export behavior. The export has no horizontal-accuracy fields, in line with the current GPX policy; the file alone cannot establish which readings had degraded reported accuracy or whether the recorded movement was real. XML parsing and structural checks were performed; GPX XSD validation and a device-side comparison to the saved route were not performed.
+
+One interval between saved points exceeds 15 seconds. The sampler defines an automatic gap using valid observed callbacks, including callbacks that are not saved, so this interval alone does not establish a missing segment break. Those callbacks are not present in the GPX.

@@ -52,3 +52,4 @@ yarn-error.*
 *.apks
 /artifacts/
 graphify-out/
+ignore/

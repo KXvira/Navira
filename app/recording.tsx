@@ -5,17 +5,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionButton } from '../src/components/ActionButton';
 import { InfoButton } from '../src/components/InfoButton';
 import { useAppData } from '../src/hooks/AppData';
+import { accuracyDescription } from '../src/utils/accuracyDisplay';
 import { formatDistance } from '../src/utils/guidance';
+import { formatMeasurement } from '../src/utils/locationDisplay';
 
 function formatElapsed(ms: number): string {
   const total = Math.floor(ms / 1000);
   return `${Math.floor(total / 3600)}:${String(Math.floor(total % 3600 / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 export default function RecordingScreen() {
-  const { routes, phase } = useAppData();
+  const { routes, phase, location } = useAppData();
   const [name, setName] = useState('');
   const draft = routes.draft;
   const canAcquire = phase === 'receiving';
+  const currentAccuracy = canAcquire ? location.state.reading?.coords.accuracy : null;
+  const savedAccuracy = draft?.lastPoint?.horizontalAccuracy;
+  const currentQuality = accuracyDescription(currentAccuracy);
+  const savedQuality = accuracyDescription(savedAccuracy);
   async function save() { if (await routes.save(name)) router.back(); }
   function confirmDiscard() {
     if (!draft) return;
@@ -28,6 +34,13 @@ export default function RecordingScreen() {
     <Text style={styles.state}>{routes.loading ? 'Loading recording…' : !draft ? 'Ready to record' : routes.suspended ? 'Recording halted · pause not saved' : draft.status === 'paused' && draft.pauseReason === 'interrupted' ? 'Interrupted recording · resume required' : draft.status === 'paused' && draft.pauseReason === 'background' ? 'Paused after leaving foreground · resume required' : draft.status === 'recording' ? 'Recording in foreground' : draft.status === 'paused' ? 'Paused' : 'Stopped · name and save'}</Text>
     <View style={styles.metrics}><View style={styles.metric}><Text style={styles.label}>Active time</Text><Text style={styles.value}>{formatElapsed(routes.elapsedActiveMs)}</Text></View><View style={styles.metric}><Text style={styles.label}>Saved points</Text><Text style={styles.value}>{draft?.pointCount ?? 0}</Text></View></View>
     <View style={styles.metric}><Text style={styles.label}>Estimated recorded distance</Text><Text style={styles.value}>{formatDistance(draft?.distanceMeters ?? 0)}</Text></View>
+    {draft && <View style={styles.metric}>
+      <Text style={styles.label}>Recording quality</Text>
+      <Text style={styles.muted}>Current reported accuracy: {canAcquire ? formatMeasurement(currentAccuracy, 1, ' m') : 'No fresh reading'}</Text>
+      <Text style={styles.muted}>Last saved point accuracy: {draft.lastPoint ? formatMeasurement(savedAccuracy, 1, ' m') : 'No saved point yet'}</Text>
+      {(currentQuality === 'low' && canAcquire || savedQuality === 'low') && <Text style={styles.warning}>Low reported precision (over 100 m). Recorded distance may include location jumps.</Text>}
+      {(currentQuality === 'unavailable' && canAcquire || savedQuality === 'unavailable' && !!draft.lastPoint) && <Text style={styles.warning}>Accuracy unavailable for a current or saved reading. Distance quality is uncertain.</Text>}
+    </View>}
     {!canAcquire && <Text style={styles.warning}>Wait for a fresh location before starting or resuming. Existing points remain saved.</Text>}
     {routes.error && <Text style={styles.error}>{routes.error}</Text>}
     {!draft && <ActionButton label="Start recording" onPress={() => void routes.start()} disabled={routes.loading || routes.busy || !canAcquire} />}

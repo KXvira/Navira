@@ -24,6 +24,6 @@ The owner reports that all requested Samsung A16 checks passed: airplane-mode sa
 
 Location, Waypoints, and Satellites are separate tabs. Waypoint save and detail/edit use focused routes. Selecting a destination shows local straight-line distance and initial true-north bearing only while the current location is fresh. No map, compass alignment, background tracking, or position averaging is included. The owner reported milestone 5 and its UX fixes satisfactory on a Samsung A16 without individual test measurements; see [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
 
-## Milestone 6 — offline foreground route recording (implemented; device validation pending)
+## Milestone 6 — offline foreground route recording (accepted by owner report)
 
-The app records accepted foreground location samples in SQLite, pauses across background/lock, preserves segment breaks, recovers interrupted work paused, and exports named saved routes as local GPX through the share sheet. Device acceptance and final APK manifest inspection remain pending. No build was triggered during implementation.
+The app records accepted foreground location samples in SQLite, pauses across background/lock, preserves segment breaks, recovers interrupted work paused, and exports named saved routes as local GPX through the share sheet. The owner reports that the app works on a device, with occasional degraded location accuracy. An owner-exported GPX and final APK manifest have not been inspected. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
