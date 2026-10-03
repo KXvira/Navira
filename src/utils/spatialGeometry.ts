@@ -22,6 +22,11 @@ export function routeGeometry(points: RoutePoint[]): { lines: FeatureCollection<
   };
 }
 
+export function visibleRoutePoints(pointsByRoute: Record<string, RoutePoint[]>, routeId?: string): Record<string, RoutePoint[]> {
+  if (!routeId) return pointsByRoute;
+  return pointsByRoute[routeId] ? { [routeId]: pointsByRoute[routeId] } : {};
+}
+
 export function waypointGeometry(waypoints: Waypoint[]): FeatureCollection<Point> {
   return { type: 'FeatureCollection', features: waypoints.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude) && Math.abs(point.latitude) <= 90 && Math.abs(point.longitude) <= 180).map((point) => ({ type: 'Feature', properties: { id: point.id, name: point.name }, geometry: { type: 'Point', coordinates: [point.longitude, point.latitude] } })) };
 }

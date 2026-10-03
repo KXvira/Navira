@@ -45,3 +45,13 @@ No pause or gap boundary appears in this file, so it cannot verify multi-segment
 One interval between saved points exceeds 15 seconds. The sampler defines an automatic gap using valid observed callbacks, including callbacks that are not saved, so this interval alone does not establish a missing segment break. Those callbacks are not present in the GPX.
 
 The later policy 2 quality fix for new recordings has not been built or device tested. The owner's acceptance and the inspected GPX above describe the previous recording behavior only.
+
+## Milestone 7 — offline map controls and Kitchen route discrepancy
+
+The owner reports that all map controls work offline on a Samsung A16. This accepts the controls under the owner's test conditions; the APK build ID and exact network settings for this map test were not supplied.
+
+The owner reports that the Kitchen route appears as a long cyan line plus a separate short cyan line. The supplied Kitchen GPX has one track segment and seven points. GPX export groups eligible stored points by `segment_index`; map GeoJSON also groups eligible points by `segmentIndex` and does not split on elapsed time. Legacy policy 1 points migrate with `distance_status = 'legacy'`, which both paths include. The 17.998-second interval between two exported points therefore does not itself explain a map-only break.
+
+Code inspection found that a route-specific map previously rendered every saved route, while using the selected route only for camera fitting. The map now limits displayed route geometry to the selected route when opened from route details. This is a confirmed route-selection defect and a possible explanation for the separate short line, but the device's Kitchen point rows and other saved routes have not been inspected. Route-rendering correctness remains pending until the owner checks this build on the phone or supplies a diagnostic of the saved route rows. No route rows or totals were modified.
+
+Minimal device check: open Kitchen's route details and capture the header showing legacy/policy status and segment count, then capture all seven saved-point rows showing their segment numbers and statuses. Open Kitchen via **View on map** on a build containing the route-selection fix. If the short line remains, a local diagnostic export containing only the Kitchen route's policy version and ordered point IDs, segment IDs, timestamps, distance statuses, and coordinates is needed; do not send the full database or unrelated routes.

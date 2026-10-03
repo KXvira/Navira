@@ -7,7 +7,7 @@ import { SpatialMap, type SpatialMapControls } from '../src/components/SpatialMa
 import { useAppData } from '../src/hooks/AppData';
 import { useSpatialRoutes } from '../src/hooks/useSpatialRoutes';
 import { formatMeasurement, readingAgeSeconds } from '../src/utils/locationDisplay';
-import { routeGeometry } from '../src/utils/spatialGeometry';
+import { routeGeometry, visibleRoutePoints } from '../src/utils/spatialGeometry';
 
 export default function MapScreen() {
   const { routeId, waypointId } = useLocalSearchParams<{ routeId?: string; waypointId?: string }>();
@@ -18,7 +18,7 @@ export default function MapScreen() {
   const fresh = phase === 'receiving' && reading !== null;
   const current: [number, number] | null = fresh ? [reading.coords.longitude, reading.coords.latitude] : null;
   const age = readingAgeSeconds(reading?.timestamp ?? null, now);
-  const hasRoute = Object.values(pointsByRoute).some((points) => routeGeometry(points).coordinates.length > 0);
+  const hasRoute = Object.values(visibleRoutePoints(pointsByRoute, routeId)).some((points) => routeGeometry(points).coordinates.length > 0);
   return <><Stack.Screen options={{ title: 'Local map' }} /><SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}>
     <View style={styles.notice}><Text style={styles.title}>Local spatial view · No street or terrain basemap installed</Text>
       <Text style={styles.details}>Yellow: waypoints · Cyan: eligible route segments · Blue: fresh location</Text>

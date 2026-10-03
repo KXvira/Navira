@@ -4,7 +4,7 @@ import { Camera, GeoJSONSource, Layer, Map, type CameraRef, type StyleSpecificat
 import type { FeatureCollection, LineString, Point } from 'geojson';
 import type { RoutePoint } from '../types/route';
 import type { Waypoint } from '../types/waypoint';
-import { coordinateBounds, routeGeometry, waypointGeometry } from '../utils/spatialGeometry';
+import { coordinateBounds, routeGeometry, visibleRoutePoints, waypointGeometry } from '../utils/spatialGeometry';
 
 // No source, URL, sprite, glyph, or tile request is part of this bundled style.
 const LOCAL_STYLE: StyleSpecification = { version: 8, name: 'Navira local canvas', sources: {}, layers: [{ id: 'canvas', type: 'background', paint: { 'background-color': '#102a39' } }] };
@@ -12,7 +12,7 @@ const LOCAL_STYLE: StyleSpecification = { version: 8, name: 'Navira local canvas
 export type SpatialMapControls = { fitRoute: () => void; recenter: () => void };
 export function SpatialMap({ waypoints, pointsByRoute, routeId, waypointId, current, controls }: { waypoints: Waypoint[]; pointsByRoute: Record<string, RoutePoint[]>; routeId?: string; waypointId?: string; current: [number, number] | null; controls: React.RefObject<SpatialMapControls | null> }) {
   const camera = useRef<CameraRef>(null);
-  const routeParts = useMemo(() => Object.entries(pointsByRoute).map(([id, points]) => ({ id, ...routeGeometry(points) })), [pointsByRoute]);
+  const routeParts = useMemo(() => Object.entries(visibleRoutePoints(pointsByRoute, routeId)).map(([id, points]) => ({ id, ...routeGeometry(points) })), [pointsByRoute, routeId]);
   const lines = useMemo<FeatureCollection<LineString>>(() => ({ type: 'FeatureCollection', features: routeParts.flatMap((part) => part.lines.features) }), [routeParts]);
   const anchors = useMemo<FeatureCollection<Point>>(() => ({ type: 'FeatureCollection', features: routeParts.flatMap((part) => part.anchors.features) }), [routeParts]);
   const waypointData = useMemo(() => waypointGeometry(waypoints), [waypoints]);
