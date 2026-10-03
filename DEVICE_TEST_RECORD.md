@@ -43,3 +43,5 @@ The owner supplied `ignore/8d7bc6d6-a45b-49d5-87b4-43b07251af2d.gpx`. Local XML 
 No pause or gap boundary appears in this file, so it cannot verify multi-segment export behavior. The export has no horizontal-accuracy fields, in line with the current GPX policy; the file alone cannot establish which readings had degraded reported accuracy or whether the recorded movement was real. XML parsing and structural checks were performed; GPX XSD validation and a device-side comparison to the saved route were not performed.
 
 One interval between saved points exceeds 15 seconds. The sampler defines an automatic gap using valid observed callbacks, including callbacks that are not saved, so this interval alone does not establish a missing segment break. Those callbacks are not present in the GPX.
+
+The later policy 2 quality fix for new recordings has not been built or device tested. The owner's acceptance and the inspected GPX above describe the previous recording behavior only.

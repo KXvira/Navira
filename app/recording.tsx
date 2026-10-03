@@ -32,8 +32,14 @@ export default function RecordingScreen() {
   }
   return <SafeAreaView style={styles.screen} edges={['bottom', 'left', 'right']}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
     <Text style={styles.state}>{routes.loading ? 'Loading recording…' : !draft ? 'Ready to record' : routes.suspended ? 'Recording halted · pause not saved' : draft.status === 'paused' && draft.pauseReason === 'interrupted' ? 'Interrupted recording · resume required' : draft.status === 'paused' && draft.pauseReason === 'background' ? 'Paused after leaving foreground · resume required' : draft.status === 'recording' ? 'Recording in foreground' : draft.status === 'paused' ? 'Paused' : 'Stopped · name and save'}</Text>
-    <View style={styles.metrics}><View style={styles.metric}><Text style={styles.label}>Active time</Text><Text style={styles.value}>{formatElapsed(routes.elapsedActiveMs)}</Text></View><View style={styles.metric}><Text style={styles.label}>Saved points</Text><Text style={styles.value}>{draft?.pointCount ?? 0}</Text></View></View>
+    <View style={styles.metrics}><View style={styles.metric}><Text style={styles.label}>Active time</Text><Text style={styles.value}>{formatElapsed(routes.elapsedActiveMs)}</Text></View><View style={styles.metric}><Text style={styles.label}>Stored samples</Text><Text style={styles.value}>{draft?.pointCount ?? 0}</Text></View></View>
     <View style={styles.metric}><Text style={styles.label}>Estimated recorded distance</Text><Text style={styles.value}>{formatDistance(draft?.distanceMeters ?? 0)}</Text></View>
+    {draft?.policyVersion === 2 && <View style={styles.metric}>
+      <Text style={styles.label}>Points contributing to distance</Text><Text style={styles.value}>{draft.distancePointCount ?? 0}</Text>
+      <Text style={styles.muted}>Observed low-precision duration: {formatElapsed(draft.excludedDurationMs)}</Text>
+      <Text style={styles.warning}>Distance excludes low-precision periods.</Text>
+      <Text style={styles.muted}>The duration counts only intervals between consecutive valid low-precision observations. Pauses and missing callbacks add no time.</Text>
+    </View>}
     {draft && <View style={styles.metric}>
       <Text style={styles.label}>Recording quality</Text>
       <Text style={styles.muted}>Current reported accuracy: {canAcquire ? formatMeasurement(currentAccuracy, 1, ' m') : 'No fresh reading'}</Text>
@@ -49,7 +55,7 @@ export default function RecordingScreen() {
     {draft?.status === 'stopped' && <><Text style={styles.label}>Route name (required)</Text><TextInput accessibilityLabel="Route name" maxLength={120} placeholder="Name this route" placeholderTextColor="#71889b" value={name} onChangeText={setName} style={styles.input} /><ActionButton label="Save route" onPress={() => void save()} disabled={routes.busy || !name.trim()} /></>}
     {draft && <ActionButton label="Discard recording" onPress={confirmDiscard} disabled={routes.busy} danger />}
     <Text style={styles.muted}>Recording pauses when the app backgrounds or the phone locks. Return and choose Resume; closed time is not recorded.</Text>
-    <InfoButton title="Route recording" message="Navira stores accepted location points locally while the app is foregrounded. It rejects stale and out-of-order samples and filters movement smaller than reported horizontal uncertainty or 10 m. Distance is estimated from accepted points within each segment, and can differ from actual travel. No distance is added across pauses or gaps." />
+    <InfoButton title="Route recording" message="New routes store valid foreground observations at most once every two seconds, including low-precision samples with their reported accuracy and exclusion reason. Missing accuracy or accuracy over 100 m excludes distance and breaks its segment. A value at or below 100 m does not guarantee a reliable position. Stationary readings and implausible jumps are retained but excluded from distance. GPX export omits excluded samples from its track geometry. Older routes keep their original recording policy and totals." />
   </ScrollView></SafeAreaView>;
 }
 const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { padding: 18, paddingBottom: 38 }, state: { color: '#d9f4e8', fontSize: 18, fontWeight: '700', lineHeight: 24 }, metrics: { flexDirection: 'row', gap: 10, marginTop: 16 }, metric: { backgroundColor: '#132334', borderRadius: 12, padding: 14, marginTop: 10, flexGrow: 1 }, label: { color: '#a9bed0', lineHeight: 20, marginTop: 12 }, value: { color: '#fff', fontSize: 24, fontWeight: '700', marginTop: 4 }, muted: { color: '#a9bed0', lineHeight: 21, marginTop: 18 }, warning: { color: '#f4d7a1', lineHeight: 20, marginTop: 12 }, error: { color: '#ffb8b8', lineHeight: 20, marginTop: 12 }, input: { backgroundColor: '#132334', borderColor: '#456078', borderWidth: 1, borderRadius: 9, color: '#fff', padding: 12, marginTop: 8 } });

@@ -19,7 +19,7 @@ export function LocationScreen() {
       <Reading label="Altitude" value={formatMeasurement(coords?.altitude, 1, ' m')} />
       <Reading label="Speed" value={formatSpeed(coords?.speed)} />
     </View>
-    <View style={styles.info}><InfoButton title="Location readings" message="Readings come from Android location services. Expo Location does not establish that they came exclusively from GNSS. Reported accuracy is an estimate, not a measured error. Coordinates stay on this device unless you explicitly save a waypoint." /></View>
+    <View style={styles.info}><InfoButton title="Location readings" message="Readings come from Android location services. Expo Location does not establish that they came exclusively from GNSS. Reported accuracy is an estimate, not a measured error. Coordinates stay on this device and are stored only when you save a waypoint or start a foreground route recording." /></View>
   </ScrollView></SafeAreaView>;
 }
 const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }, grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 }, info: { alignSelf: 'flex-start', marginTop: 8 } });

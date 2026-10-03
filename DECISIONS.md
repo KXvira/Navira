@@ -1,11 +1,11 @@
 # Decisions
 
-- Keep the existing single-screen entry point and working Expo Go measurement flow. Expo Router is deferred until there is navigation to implement.
+- Preserve the original Expo Go measurement flow as the app grows. Expo Router now composes tabs and focused routes.
 - Isolate Expo Location calls in one service and lifecycle in one hook so subscription cleanup and retry are easy to inspect.
-- Request foreground permission only. No background task, network transfer, or persistence is needed for this milestone.
+- Request foreground permission only. Waypoints and user-started routes now persist locally; no location coordinates are transmitted.
 - Use `Location.Accuracy.High` and a one-second requested interval. These are requests to the platform, not guarantees of update frequency or GNSS provenance.
 - Preserve the last reading during stale and failure states, with explicit status and elapsed time.
-- Keep dependencies unchanged. `npm audit fix --force` is excluded because it proposes an Expo 44 downgrade.
+- `npm audit fix --force` is excluded because it proposes an Expo 44 downgrade.
 
 ## Milestone 2 build decisions
 
@@ -29,7 +29,7 @@
 - Put SQLite behind `WaypointRepository`; UI and hooks work with typed waypoint models and never issue queries.
 - Use `expo-crypto` UUIDv4 identifiers. IDs remain stable when names and notes change.
 - Snapshot the Expo reading when the save form opens, then reuse the location freshness threshold on submission. Report accuracy without introducing a blocking cutoff.
-- Keep waypoint CRUD on the existing one-screen app. Navigation, maps, import/export, routes, bearing, distance, and averaging remain outside this milestone.
+- Keep waypoint CRUD separate from route recording and guidance. Maps and averaging remain outside this milestone.
 
 ## Milestone 5 decisions
 
@@ -43,3 +43,9 @@
 - Allow one unfinished route. Persist accepted points and route counters atomically, checkpoint active time every five seconds, and recover an interrupted recording paused with only committed time.
 - Use conservative movement and accuracy thresholds plus a speed sanity limit to reduce stationary jitter. Sum distance only within persisted segments; do not imply survey-grade distance.
 - Use Expo FileSystem cache and Expo Sharing for a local GPX 1.1 file. Omit reported accuracy from GPX rather than mislabel it as HDOP.
+
+## Route-quality policy 2 decisions
+
+- Apply the new quality rule only to newly created routes. Version the schema and route policy; migrate old rows without changing their points or totals.
+- Store sampled observations and their distance status, exclude missing or over-100 m accuracy from distance, and start fresh geometry after quality loss. Count excluded duration only from short observed intervals, without estimating time through callback silence or lifecycle gaps.
+- Keep low-quality samples in SQLite for inspection, and omit them from primary GPX geometry so an export cannot connect across an excluded period.

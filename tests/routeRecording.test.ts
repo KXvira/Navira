@@ -6,7 +6,8 @@ const check = (value: boolean, message: string) => { if (!value) throw new Error
 const start = 1_800_000_000_000;
 const route: RecordedRoute = { id: 'r1', name: null, status: 'recording', pauseReason: null, createdAt: start,
   updatedAt: start, activeElapsedMs: 5_000, activeSinceMs: start, segmentIndex: 0,
-  pointCount: 0, distanceMeters: 0, lastPoint: null };
+  pointCount: 0, distanceMeters: 0, policyVersion: 1, distancePointCount: null,
+  excludedDurationMs: 0, lastObservedAtMs: null, lastObservedQualityExcluded: false, lastPoint: null };
 check(activeElapsedAt(route, start + 3_000) === 8_000, 'active time adds live interval');
 const paused = pauseRecording(route, 'manual', start + 3_000);
 check(paused.status === 'paused' && paused.activeElapsedMs === 8_000 && paused.activeSinceMs === null, 'pause stores elapsed time');
@@ -21,7 +22,7 @@ check(recoverInterruptedRecording(paused, start + 600_000) === paused, 'already 
 const first: RouteSample = { latitude: 0, longitude: 0, altitude: null, horizontalAccuracy: 5, capturedAt: start };
 const accepted = evaluateRouteSample(first, null, 0, start + 100);
 check(accepted.accepted && accepted.distanceMeters === 0, 'first sample starts without distance');
-const last: RoutePoint = { id: 1, routeId: 'r1', segmentIndex: 0, ...first };
+const last: RoutePoint = { id: 1, routeId: 'r1', segmentIndex: 0, ...first, distanceStatus: 'legacy' };
 check(!evaluateRouteSample(first, last, 0, start + 100).accepted, 'duplicate timestamp rejected');
 check(!evaluateRouteSample({ ...first, capturedAt: start - 1 }, last, 0, start + 100).accepted, 'out-of-order timestamp rejected');
 check(evaluateRouteSample({ ...first, capturedAt: start + 2_000 }, last, 0, start + 4_100, start + 3_000).accepted === false, 'sample older than a filtered observation rejected');

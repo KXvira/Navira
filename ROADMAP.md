@@ -26,4 +26,8 @@ Location, Waypoints, and Satellites are separate tabs. Waypoint save and detail/
 
 ## Milestone 6 — offline foreground route recording (accepted by owner report)
 
-The app records accepted foreground location samples in SQLite, pauses across background/lock, preserves segment breaks, recovers interrupted work paused, and exports named saved routes as local GPX through the share sheet. The owner reports that the app works on a device, with occasional degraded location accuracy. An owner-exported GPX and final APK manifest have not been inspected. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
+The app records foreground location samples in SQLite, pauses across background/lock, preserves segment breaks, recovers interrupted work paused, and exports named saved routes as local GPX through the share sheet. The owner reports that the app works on a device, with occasional degraded location accuracy. One owner-exported GPX was structurally inspected; it has one segment and cannot verify segment breaks after pauses. The new recording-quality policy has not been device tested, and the final APK manifest has not been inspected. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
+
+## Milestone 7 — spatial view and managed offline maps (planned)
+
+Show saved waypoints, saved route segments, and fresh current location spatially, then add explicitly managed offline coverage from licensed data. No map implementation or permission change has begun. See [MILESTONE_7_MAP_PLAN.md](MILESTONE_7_MAP_PLAN.md).

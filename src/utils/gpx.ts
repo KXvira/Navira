@@ -17,6 +17,8 @@ export function routeToGpx(route: RecordedRoute, points: RoutePoint[]): string {
   const segments: RoutePoint[][] = [];
   for (const point of ordered) {
     if (!Number.isFinite(point.latitude) || !Number.isFinite(point.longitude) || Math.abs(point.latitude) > 90 || Math.abs(point.longitude) > 180 || !Number.isFinite(point.capturedAt) || point.capturedAt <= 0 || (point.altitude !== null && !Number.isFinite(point.altitude))) throw new Error('Route contains an invalid point.');
+    if (!['legacy', 'anchor', 'counted', 'stationary', 'spike', 'missing-accuracy', 'low-precision'].includes(point.distanceStatus)) throw new Error('Route contains an invalid distance status.');
+    if (point.distanceStatus !== 'legacy' && point.distanceStatus !== 'anchor' && point.distanceStatus !== 'counted') continue;
     if (!segments.length || segments[segments.length - 1][0].segmentIndex !== point.segmentIndex) segments.push([]);
     segments[segments.length - 1].push(point);
   }

@@ -1,5 +1,6 @@
 export type RouteStatus = 'recording' | 'paused' | 'stopped' | 'saved';
 export type PauseReason = 'manual' | 'background' | 'interrupted' | null;
+export type DistanceStatus = 'legacy' | 'anchor' | 'counted' | 'stationary' | 'spike' | 'missing-accuracy' | 'low-precision';
 
 export interface RoutePoint {
   id: number;
@@ -10,6 +11,7 @@ export interface RoutePoint {
   altitude: number | null;
   horizontalAccuracy: number | null;
   capturedAt: number;
+  distanceStatus: DistanceStatus;
 }
 
 export type RouteSample = Pick<RoutePoint, 'latitude' | 'longitude' | 'altitude' | 'horizontalAccuracy' | 'capturedAt'>;
@@ -25,6 +27,11 @@ export interface RecordedRoute {
   activeSinceMs: number | null;
   segmentIndex: number;
   pointCount: number;
+  policyVersion: 1 | 2;
+  distancePointCount: number | null;
+  excludedDurationMs: number;
+  lastObservedAtMs: number | null;
+  lastObservedQualityExcluded: boolean;
   distanceMeters: number;
   lastPoint: RoutePoint | null;
 }
