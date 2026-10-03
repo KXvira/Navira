@@ -46,7 +46,8 @@
       ],
       "./plugins/withNaviraReleaseSigning",
       "expo-router",
-      "expo-sharing"
+      "expo-sharing",
+      "@maplibre/maplibre-react-native"
     ],
     "extra": {
       "eas": {

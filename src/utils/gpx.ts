@@ -1,4 +1,5 @@
 import type { RecordedRoute, RoutePoint } from '../types/route';
+import { isEligibleRoutePoint } from './spatialGeometry';
 
 function escapeXml(value: string): string {
   // Keep XML 1.0 characters, including valid supplementary Unicode characters.
@@ -18,7 +19,7 @@ export function routeToGpx(route: RecordedRoute, points: RoutePoint[]): string {
   for (const point of ordered) {
     if (!Number.isFinite(point.latitude) || !Number.isFinite(point.longitude) || Math.abs(point.latitude) > 90 || Math.abs(point.longitude) > 180 || !Number.isFinite(point.capturedAt) || point.capturedAt <= 0 || (point.altitude !== null && !Number.isFinite(point.altitude))) throw new Error('Route contains an invalid point.');
     if (!['legacy', 'anchor', 'counted', 'stationary', 'spike', 'missing-accuracy', 'low-precision'].includes(point.distanceStatus)) throw new Error('Route contains an invalid distance status.');
-    if (point.distanceStatus !== 'legacy' && point.distanceStatus !== 'anchor' && point.distanceStatus !== 'counted') continue;
+    if (!isEligibleRoutePoint(point)) continue;
     if (!segments.length || segments[segments.length - 1][0].segmentIndex !== point.segmentIndex) segments.push([]);
     segments[segments.length - 1].push(point);
   }

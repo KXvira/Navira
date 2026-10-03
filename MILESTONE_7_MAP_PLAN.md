@@ -1,6 +1,12 @@
 # Milestone 7 plan — local spatial view, then managed offline coverage
 
-Status: plan only. No map dependency, map screen, tile source, permission, or build has been added. Research checked on 2026-10-03 against [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/), [MapLibre React Native](https://maplibre.org/maplibre-react-native/docs/setup/getting-started/), and provider terms below.
+Status: 7A local spatial view implemented in source; native GitHub build and device acceptance are separate gates. No tile source, provider, download, or INTERNET permission has been added. Research checked on 2026-10-03 against [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/), [MapLibre React Native](https://maplibre.org/maplibre-react-native/docs/setup/getting-started/), and provider terms below.
+
+## Milestone 7A implementation
+
+The app uses `@maplibre/maplibre-react-native` 11.4.1 with Expo 57, React Native 0.86.3, and React 19.2.3. Those versions satisfy the library's documented minimums; only a successful native build establishes integration with this project. The bundled style has only a background layer and no URL, source, sprite, glyph, or tile references. The map labels the absence of a street/terrain basemap. Saved waypoint markers, saved route line segments and single-point anchors, and a fresh current-location marker are in-memory GeoJSON. The route geometry uses the same eligibility function as GPX: legacy, anchor, and counted samples. It groups by persisted segment index and never draws a line across a quality-excluded segment break. Excluded samples are not shown as map geometry. Map reads through the existing app hooks, makes no storage writes, and does not alter recording or totals. Waypoint and route details open the map as a focused route; pan, pinch zoom, Fit route, and Recenter are available. Recenter is available only with a fresh Expo Location reading, and the screen shows age and reported accuracy.
+
+7A acceptance still requires a signed native APK build and owner device testing. Check the final APK manifest for no INTERNET, background location, or foreground service permission. Check airplane mode/Wi-Fi off, route breaks, waypoint and route detail entry, fit/recenter, fresh/stale marker, accuracy text, relaunch, and unchanged saved distance/GPX. No map data attribution applies to the blank local style; MapLibre library attribution remains in project notices. 7B coverage remains a separate decision requiring rights, pack format, asset completeness, and a deliberate INTERNET policy if downloads are chosen.
 
 ## Recommendation and architecture
 
@@ -32,7 +38,7 @@ For optional user-managed downloads, Stadia Maps is a plausible provider to eval
 2. **Coverage prototype:** test one legally sourced local vector pack or a provider-approved small offline pack on the Samsung A16. Check styles, glyphs, sprites, attribution, storage size, restart persistence, and true airplane-mode rendering. Decide between local import and explicit network download based on rights and the INTERNET policy.
 3. **Managed coverage:** add named regions, explicit select/import/download, size estimate and cap, progress/error/retry, list and delete, update/revalidation when online and licensed, incomplete-coverage indicator, and no automatic prefetch. Keep map data storage separate from waypoint/route SQLite and never modify recorded geometry to fit a map.
 
-Dependencies before phase 2: a compatible native MapLibre build, documented map-data and style rights, a pack format and asset manifest, storage limits, attribution text, and an explicit decision on whether `INTERNET` may be unblocked. No map package or permission is added by this plan.
+Dependencies before phase 2: a compatible native MapLibre build, documented map-data and style rights, a pack format and asset manifest, storage limits, attribution text, and an explicit decision on whether `INTERNET` may be unblocked. The 7A map package and local view do not add a map-data provider or permission.
 
 ## Device acceptance criteria
 

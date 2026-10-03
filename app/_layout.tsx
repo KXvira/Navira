@@ -10,6 +10,7 @@ export default function RootLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="recording" options={{ title: 'Record route' }} />
       <Stack.Screen name="route/[id]" options={{ title: 'Route' }} />
+      <Stack.Screen name="map" options={{ title: 'Local map' }} />
       <Stack.Screen name="guidance" options={{ title: 'Guidance' }} />
       <Stack.Screen name="waypoint/new" options={{ title: 'Save waypoint' }} />
       <Stack.Screen name="waypoint/[id]" options={{ title: 'Waypoint' }} />

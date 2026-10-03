@@ -11,7 +11,7 @@ npm ci
 npx expo start --tunnel
 ```
 
-Expo Go can run the JavaScript location, waypoint, and route screens, but the Satellites tab shows that the custom native module is unavailable. Native module changes require a new Android binary; Metro reloads JavaScript only. Local checks: `npx expo lint`, `npx tsc --noEmit`, and `npx expo-doctor`.
+Expo Go can run the JavaScript location, waypoint, and route screens, but the Satellites tab shows that the custom native module is unavailable. The local map also requires a rebuilt native binary with MapLibre. Native module changes require a new Android binary; Metro reloads JavaScript only. Local checks: `npx expo lint`, `npx tsc --noEmit`, and `npx expo-doctor`.
 
 ## Android release APK: GitHub Actions
 
@@ -28,7 +28,11 @@ A Git remote was not configured when this workflow was prepared. After adding an
 
 Use the **same key** as the APK already installed on the Samsung A16, or Android will reject an update under the same application ID. To retrieve it yourself, run `npx eas-cli@latest credentials -p android` in this project, select the Android build profile used for the installed APK, then choose **credentials.json: Upload/Download credentials between EAS servers and your local json → Download credentials from EAS to credentials.json**. Read that downloaded file for the keystore path and three signing values; encode the keystore file as one-line Base64 before adding the four GitHub secrets. Do not commit `credentials.json` or the keystore, and do not share their contents in chat. `credentials.json` and `*.jks` are ignored by Git. [Expo credential download instructions](https://docs.expo.dev/app-signing/syncing-credentials/)
 
-Once the workflow file is on the default branch, open **Actions → Android preview APK → Run workflow**. Download the `navira-preview-apk` artifact from that run. Missing signing secrets cause an explicit failure; the workflow never falls back to the debug key. Compare the signing certificate fingerprint with the installed APK before installing over it. No workflow was pushed or run during this implementation.
+Once the workflow file is on the default branch, open **Actions → Android preview APK → Run workflow**. Download the `navira-preview-apk` artifact from that run. Missing signing secrets cause an explicit failure; the workflow never falls back to the debug key. Compare the signing certificate fingerprint with the installed APK before installing over it. Each build checks that the final APK has foreground location permissions and no INTERNET, background location, or foreground service permission.
+
+## Milestone 7A local map acceptance
+
+The local MapLibre style has a plain background and no street/terrain basemap, tiles, remote style, glyph, or sprite. On a rebuilt signed APK, open a saved waypoint and a saved route through **View on map**. In airplane mode with Wi-Fi off, confirm waypoint markers, route lines split at excluded spans, pan/pinch zoom, Fit route, and Recenter. Confirm the fresh blue marker, age, and reported accuracy; when the reading becomes stale, confirm the marker disappears and Recenter disables. Test a one-point route segment, relaunch and reopen the map, then check route totals and GPX remain unchanged. Record actual device observations in `DEVICE_TEST_RECORD.md`; source checks and the native build alone do not establish device behavior. Coverage packs and provider tiles belong to the later map phase; see `MILESTONE_7_MAP_PLAN.md`.
 
 ## Device checks for the new APK
 
