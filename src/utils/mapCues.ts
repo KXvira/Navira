@@ -13,7 +13,9 @@ export function displaySegments(points: RoutePoint[]): DisplaySegment[] {
   let active: RoutePoint[] = [];
   for (const point of ordered) {
     const valid = Number.isFinite(point.latitude) && Math.abs(point.latitude) <= 90 && Number.isFinite(point.longitude) && Math.abs(point.longitude) <= 180;
-    if (!valid || !isEligibleRoutePoint(point)) { if (active.length) stretches.push(active); active = []; continue; }
+    // Excluded rows are omitted from geometry. Policy 2 advances segmentIndex for
+    // quality loss and spikes, but stationary rows retain the segment: GPX does too.
+    if (!valid || !isEligibleRoutePoint(point)) continue;
     if (active.length && active[0].segmentIndex !== point.segmentIndex) { stretches.push(active); active = []; }
     active.push(point);
   }

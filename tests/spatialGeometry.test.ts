@@ -34,18 +34,21 @@ equal(Object.keys(visibleRoutePoints({ kitchen, other })), ['kitchen', 'other'])
 import { accuracyGeometry, displaySegments } from '../src/utils/mapCues';
 const split = [
   point(1, 0, 1, 'low-precision'), point(2, 0, 2, 'anchor'),
-  point(3, 0, 3, 'counted'), point(4, 0, 4, 'spike'),
-  point(5, 0, 5, 'anchor'), point(6, 0, 6, 'counted'),
-  point(7, 1, 7, 'anchor'), point(8, 2, 8, 'missing-accuracy'),
+  point(3, 0, 3, 'counted'), point(4, 1, 4, 'spike'),
+  point(5, 1, 5, 'anchor'), point(6, 1, 6, 'counted'),
+  point(7, 2, 7, 'anchor'), point(8, 3, 8, 'missing-accuracy'),
 ];
 const stretches = displaySegments([...split].reverse());
 equal(stretches.map((s) => [s.index, s.start.id, s.finish.id]), [[1, 2, 3], [2, 5, 6], [3, 7, 7]]);
 equal(routeGeometry(split).lines.features.map((f) => f.geometry.coordinates), [[[2, 1], [3, 1]], [[5, 1], [6, 1]]]);
 equal(displaySegments([]), []);
 equal(displaySegments([point(1, 0, 1, 'anchor')]).map((s) => [s.start.id, s.finish.id]), [[1, 1]]);
-const sameStoredSegment = displaySegments([point(1, 4, 1, 'anchor'), point(2, 4, 2, 'low-precision'), point(3, 4, 3, 'anchor')]);
-equal(sameStoredSegment.map((s) => [s.index, s.start.segmentIndex, s.start.id]), [[1, 4, 1], [2, 4, 3]]);
-equal(routeGeometry([point(1, 4, 1, 'anchor'), point(2, 4, 2, 'low-precision'), point(3, 4, 3, 'anchor')]).lines.features.length, 0);
+const stationaryRows = [point(1, 4, 1, 'anchor'), point(2, 4, 2, 'stationary'), point(3, 4, 3, 'counted')];
+equal(displaySegments(stationaryRows).map((s) => [s.index, s.start.segmentIndex, s.start.id, s.finish.id]), [[1, 4, 1, 3]]);
+equal(routeGeometry(stationaryRows).lines.features[0].geometry.coordinates, [[1, 1], [3, 1]]);
+const qualityBreak = [point(4, 4, 4, 'anchor'), point(5, 5, 5, 'low-precision'), point(6, 5, 6, 'anchor')];
+equal(displaySegments(qualityBreak).map((s) => [s.index, s.start.segmentIndex, s.start.id]), [[1, 4, 4], [2, 5, 6]]);
+equal(routeGeometry(qualityBreak).lines.features.length, 0);
 const circle = accuracyGeometry([36, 0], 1000).features[0].geometry.coordinates[0];
 const north = circle[0];
 const east = circle[16];
