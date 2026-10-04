@@ -43,6 +43,9 @@ equal(stretches.map((s) => [s.index, s.start.id, s.finish.id]), [[1, 2, 3], [2, 
 equal(routeGeometry(split).lines.features.map((f) => f.geometry.coordinates), [[[2, 1], [3, 1]], [[5, 1], [6, 1]]]);
 equal(displaySegments([]), []);
 equal(displaySegments([point(1, 0, 1, 'anchor')]).map((s) => [s.start.id, s.finish.id]), [[1, 1]]);
+const sameStoredSegment = displaySegments([point(1, 4, 1, 'anchor'), point(2, 4, 2, 'low-precision'), point(3, 4, 3, 'anchor')]);
+equal(sameStoredSegment.map((s) => [s.index, s.start.segmentIndex, s.start.id]), [[1, 4, 1], [2, 4, 3]]);
+equal(routeGeometry([point(1, 4, 1, 'anchor'), point(2, 4, 2, 'low-precision'), point(3, 4, 3, 'anchor')]).lines.features.length, 0);
 const circle = accuracyGeometry([36, 0], 1000).features[0].geometry.coordinates[0];
 const north = circle[0];
 const east = circle[16];

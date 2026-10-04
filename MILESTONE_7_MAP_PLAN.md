@@ -1,6 +1,6 @@
 # Milestone 7 plan — local spatial view, then managed offline coverage
 
-Status: 7A local spatial view implemented in source; native GitHub build and device acceptance are separate gates. No tile source, provider, download, or INTERNET permission has been added. Research checked on 2026-10-03 against [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/), [MapLibre React Native](https://maplibre.org/maplibre-react-native/docs/setup/getting-started/), and provider terms below.
+Status: 7A local spatial view implemented in source; native GitHub build and device acceptance are separate gates. Milestone 7B remains paused while the SQLite exception and route display are checked on a device. No tile source, provider, download, or INTERNET permission has been added. Research checked on 2026-10-03 against [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/), [MapLibre React Native](https://maplibre.org/maplibre-react-native/docs/setup/getting-started/), and provider terms below.
 
 ## Milestone 7A implementation
 
