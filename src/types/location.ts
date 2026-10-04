@@ -12,5 +12,6 @@ export type LocationPhase =
 export interface LocationState {
   phase: LocationPhase;
   reading: LocationObject | null;
+  receivedAt: number | null;
   error: string | null;
 }

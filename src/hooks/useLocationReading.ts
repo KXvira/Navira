@@ -3,7 +3,7 @@ import type { LocationSubscription } from 'expo-location';
 import { areLocationServicesEnabled, requestForegroundAccess, subscribeToLocation } from '../services/locationService';
 import type { LocationState } from '../types/location';
 
-const initialState: LocationState = { phase: 'starting', reading: null, error: null };
+const initialState: LocationState = { phase: 'starting', reading: null, receivedAt: null, error: null };
 
 export function useLocationReading() {
   const [state, setState] = useState<LocationState>(initialState);
@@ -30,7 +30,7 @@ export function useLocationReading() {
         setState((previous) => ({ ...previous, phase: 'waiting' }));
         const watcher = await subscribeToLocation(
           (reading) => {
-            if (!disposed && !watcherFailed) setState({ phase: 'receiving', reading, error: null });
+            if (!disposed && !watcherFailed) setState({ phase: 'receiving', reading, receivedAt: Date.now(), error: null });
           },
           (message) => {
             if (!disposed) {
