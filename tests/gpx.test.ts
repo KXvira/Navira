@@ -26,4 +26,10 @@ const qualityPoints: RoutePoint[] = [
 const qualityXml = routeToGpx(qualityRoute, qualityPoints);
 if ((qualityXml.match(/<trkseg>/g) ?? []).length !== 2 || (qualityXml.match(/<trkpt /g) ?? []).length !== 3) throw new Error('Quality exclusions must not reconnect track geometry');
 if (qualityXml.includes(new Date(start + 4_000).toISOString()) || qualityXml.includes(new Date(start + 6_000).toISOString())) throw new Error('Excluded points must not appear in GPX track');
+const stationaryXml = routeToGpx(qualityRoute, [
+  { ...points[0], id: 10, segmentIndex: 7, distanceStatus: 'anchor' },
+  { ...points[0], id: 11, segmentIndex: 7, distanceStatus: 'stationary' },
+  { ...points[0], id: 12, segmentIndex: 7, distanceStatus: 'counted' },
+]);
+if ((stationaryXml.match(/<trkseg>/g) ?? []).length !== 1 || (stationaryXml.match(/<trkpt /g) ?? []).length !== 2) throw new Error('Stationary row must not split eligible segment');
 console.log(xml);

@@ -28,6 +28,6 @@ Location, Waypoints, and Satellites are separate tabs. Waypoint save and detail/
 
 The app records foreground location samples in SQLite, pauses across background/lock, preserves segment breaks, recovers interrupted work paused, and exports named saved routes as local GPX through the share sheet. The owner reports that the app works on a device, with occasional degraded location accuracy. One owner-exported GPX was structurally inspected; it has one segment and cannot verify segment breaks after pauses. The new recording-quality policy has not been device tested, and the final APK manifest has not been inspected. See [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).
 
-## Milestone 7 — spatial view and managed offline maps (planned)
+## Milestone 7 — spatial view and managed offline maps (7A accepted; 7B prototype)
 
-Show saved waypoints, saved route segments, and fresh current location spatially, then add explicitly managed offline coverage from licensed data. No map implementation or permission change has begun. See [MILESTONE_7_MAP_PLAN.md](MILESTONE_7_MAP_PLAN.md).
+The 7A source renders saved waypoints, eligible saved route segments, and fresh current location on a local blank MapLibre canvas. It includes fit/recenter and entry from waypoint/route details. The owner reports that the rebuilt APK passes device checks and accepts the latest map fixes; individual results were not supplied. Intermittent location and SQLite incidents remain unresolved with unknown causes. 7B starts with a licensed, fully local basemap feasibility prototype before coverage management. INTERNET remains blocked. See [MILESTONE_7_MAP_PLAN.md](MILESTONE_7_MAP_PLAN.md) and [DEVICE_TEST_RECORD.md](DEVICE_TEST_RECORD.md).

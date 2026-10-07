@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { InfoButton } from '../components/InfoButton';
 import { LocationStatus } from '../components/LocationStatus';
@@ -19,7 +19,16 @@ export function LocationScreen() {
       <Reading label="Altitude" value={formatMeasurement(coords?.altitude, 1, ' m')} />
       <Reading label="Speed" value={formatSpeed(coords?.speed)} />
     </View>
+    <View style={styles.diagnostics}>
+      <Text style={styles.diagnosticText}>Raw Expo callback · {coords ? `${coords.latitude}, ${coords.longitude}` : 'none'}</Text>
+      <Text style={styles.diagnosticText}>Captured · {formatTime(location.state.reading?.timestamp)}</Text>
+      <Text style={styles.diagnosticText}>Received · {formatTime(location.state.receivedAt)}</Text>
+      <Text style={styles.diagnosticText}>Android mock flag · {location.state.reading?.mocked === undefined ? 'unavailable' : String(location.state.reading.mocked)}</Text>
+    </View>
     <View style={styles.info}><InfoButton title="Location readings" message="Readings come from Android location services. Expo Location does not establish that they came exclusively from GNSS. Reported accuracy is an estimate, not a measured error. Coordinates stay on this device and are stored only when you save a waypoint or start a foreground route recording." /></View>
   </ScrollView></SafeAreaView>;
 }
-const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }, grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 }, info: { alignSelf: 'flex-start', marginTop: 8 } });
+function formatTime(value: number | null | undefined) {
+  return value != null && Number.isFinite(value) && value > 0 ? new Date(value).toISOString() : 'unavailable';
+}
+const styles = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#08131f' }, content: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }, grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 }, diagnostics: { marginTop: 12 }, diagnosticText: { color: '#a9bed0', lineHeight: 20 }, info: { alignSelf: 'flex-start', marginTop: 8 } });

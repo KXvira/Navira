@@ -23,6 +23,7 @@ export default function SatellitesScreen() {
     ListHeaderComponent={<View>
       <Text style={[styles.status, phase === 'receiving' && gnssActive ? styles.receiving : styles.warning]}>{gnssActive ? messages[phase] : 'Waiting for foreground location access.'}</Text>
       <Text style={styles.muted}>{age === null ? 'Status age unavailable' : `Status age: ${age} s`}</Text>
+      {snapshot && <Text style={snapshot.usedInFixCount > 0 ? styles.receiving : styles.warning}>{snapshot.usedInFixCount > 0 ? 'Satellites marked used in latest GNSS fix' : 'No satellites marked used in latest GNSS fix'}</Text>}
       <View style={styles.counts}><Text style={styles.count}>Reported {snapshot ? snapshot.reportedCount : '—'}</Text><Text style={styles.count}>Used in fix {snapshot ? snapshot.usedInFixCount : '—'}</Text></View>
       <InfoButton title="GNSS status" message="Android reports satellites used in its latest GNSS fix. This does not establish the source of a separate Expo Location reading. C/N₀ is signal strength density, not positioning accuracy." />
     </View>}

@@ -41,6 +41,7 @@ export default function RouteDetailsScreen() {
       <Text style={styles.muted}>Segments: {new Set(points.map((item) => item.segmentIndex)).size}</Text>
       {loadError && <Text style={styles.error}>{loadError}</Text>}{routes.error && <Text style={styles.error}>{routes.error}</Text>}
       <ActionButton label="Export GPX" onPress={() => void routes.exportGpx(route)} disabled={routes.busy || !!loadError} />
+      <ActionButton label="View on map" onPress={() => router.push({ pathname: '/map', params: { routeId: route.id } })} />
       <ActionButton label="Delete route" onPress={confirmDelete} disabled={routes.busy} danger />
       <Text style={styles.heading}>Saved points</Text>
     </View> : <Text style={styles.muted}>{routes.loading ? 'Loading route…' : 'Saved route unavailable.'}</Text>}

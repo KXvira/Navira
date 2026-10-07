@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@maplibre/maplibre-react-native": "^11.4.1",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-crypto": "~57.0.3",
@@ -11,6 +12,7 @@
     "expo-location": "~57.0.20",
     "expo-router": "~57.0.24",
     "expo-sharing": "~57.0.22",
+    "expo-splash-screen": "~57.0.9",
     "expo-sqlite": "~57.0.3",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
@@ -23,6 +25,7 @@
     "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
+    "@types/geojson": "^7946.0.16",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
@@ -38,7 +41,7 @@
     "test:guidance": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-guidance-tests tests/guidance.test.ts src/utils/guidance.ts && node /tmp/navira-guidance-tests/tests/guidance.test.js",
     "test:gnss": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-gnss-tests tests/gnssDisplay.test.ts src/utils/gnssDisplay.ts src/types/gnss.ts && node /tmp/navira-gnss-tests/tests/gnssDisplay.test.js",
     "test:accuracy": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-accuracy-tests tests/accuracyDisplay.test.ts src/utils/accuracyDisplay.ts && node /tmp/navira-accuracy-tests/tests/accuracyDisplay.test.js",
-    "test:routes": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-route-tests tests/routeRecording.test.ts tests/routeQualityPolicy.test.ts tests/gpx.test.ts src/types/route.ts src/utils/recordingState.ts src/utils/routeSampling.ts src/utils/routeQualityPolicy.ts src/utils/guidance.ts src/utils/gpx.ts && node /tmp/navira-route-tests/tests/routeRecording.test.js && node /tmp/navira-route-tests/tests/routeQualityPolicy.test.js && node /tmp/navira-route-tests/tests/gpx.test.js > /tmp/navira-route-test.gpx && python3 -c \"import xml.etree.ElementTree as ET; r=ET.parse('/tmp/navira-route-test.gpx').getroot(); ns={'g':'http://www.topografix.com/GPX/1/1'}; assert len(r.findall('.//g:trkseg', ns)) == 2\" && python3 tests/routeMigration.test.py"
+    "test:routes": "tsc --ignoreConfig --module node16 --moduleResolution node16 --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/navira-route-tests tests/routeRecording.test.ts tests/routeQualityPolicy.test.ts tests/gpx.test.ts tests/spatialGeometry.test.ts src/types/route.ts src/utils/recordingState.ts src/utils/routeSampling.ts src/utils/routeQualityPolicy.ts src/utils/guidance.ts src/utils/gpx.ts src/utils/spatialGeometry.ts && node /tmp/navira-route-tests/tests/routeRecording.test.js && node /tmp/navira-route-tests/tests/routeQualityPolicy.test.js && node /tmp/navira-route-tests/tests/spatialGeometry.test.js && node /tmp/navira-route-tests/tests/gpx.test.js > /tmp/navira-route-test.gpx && python3 -c \"import xml.etree.ElementTree as ET; r=ET.parse('/tmp/navira-route-test.gpx').getroot(); ns={'g':'http://www.topografix.com/GPX/1/1'}; assert len(r.findall('.//g:trkseg', ns)) == 2\" && python3 tests/routeMigration.test.py"
   },
   "private": true
 }

@@ -26,6 +26,7 @@ export default function WaypointDetailsScreen() {
       <Text style={styles.muted}>Captured {new Date(waypoint.capturedAt).toLocaleString()}</Text>
       <Text style={styles.muted}>Modified {new Date(waypoint.modifiedAt).toLocaleString()}</Text>
       <ActionButton label={destinationId === waypoint.id ? 'View guidance' : 'Set as destination'} onPress={() => { setDestinationId(waypoint.id); router.push('/guidance'); }} />
+      <ActionButton label="View on map" onPress={() => router.push({ pathname: '/map', params: { waypointId: waypoint.id } })} />
       <ActionButton label="Edit name and note" onPress={() => router.push({ pathname: '/waypoint/edit', params: { id: waypoint.id } })} />
       {waypoints.error && <Text style={styles.error}>{waypoints.error}</Text>}
       <ActionButton label="Delete waypoint" onPress={confirmDelete} disabled={waypoints.writing} danger />

@@ -2,6 +2,9 @@ name: Android preview APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - milestone-7a-native
 
 permissions:
   contents: read
@@ -95,6 +98,10 @@ jobs:
           grep -Fq "android.permission.ACCESS_FINE_LOCATION" "$RUNNER_TEMP/navira-permissions.txt"
           if grep -Eq 'android.permission.(ACCESS_BACKGROUND_LOCATION|FOREGROUND_SERVICE|FOREGROUND_SERVICE_LOCATION)' "$RUNNER_TEMP/navira-permissions.txt"; then
             echo '::error::Unexpected background or foreground-service location permission in APK'
+            exit 1
+          fi
+          if grep -Fq 'android.permission.INTERNET' "$RUNNER_TEMP/navira-permissions.txt"; then
+            echo '::error::Unexpected INTERNET permission in APK'
             exit 1
           fi
           unzip -l "$apk_path" | grep -F 'assets/index.android.bundle' > /dev/null
