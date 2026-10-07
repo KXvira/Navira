@@ -1,22 +1,22 @@
 # Graph Report - navira  (2026-10-07)
 
 ## Corpus Check
-- 82 files · ~32,752 words
+- 86 files · ~34,518 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 563 nodes · 1029 edges · 26 communities (20 shown, 6 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.85)
+- 588 nodes · 1094 edges · 30 communities (24 shown, 6 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d9a1c795`
+- Built from commit: `5800b0d6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- routeRepository.ts
-- LocationScreen.tsx
+- RecordedRoute
+- waypointValidation.ts
 - AppData.tsx
 - dependencies
 - routeQualityPolicy.test.ts
@@ -26,7 +26,7 @@
 - scripts
 - satellites.tsx
 - map.tsx
-- LocationStatus.tsx
+- useLocationReading.ts
 - RouteRepository
 - NaviraGnssModule
 - Architecture
@@ -34,12 +34,16 @@
 - Business rules
 - Location model
 - tsconfig.json
-- useWaypoints
+- offlineMapRepository.ts
 - eslint.config.js
 - AGENTS.md
 - withNaviraReleaseSigning.js
 - UI conventions
 - maps/README.md
+- route.ts
+- routeRepository.ts
+- routeRecording.test.ts
+- routeQualityPolicy.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `useAppData()` - 25 edges
@@ -50,45 +54,45 @@
 6. `expo` - 13 edges
 7. `expo-router` - 13 edges
 8. `SQLiteRouteRepository` - 13 edges
-9. `db()` - 12 edges
-10. `straightLineGuidance()` - 12 edges
+9. `scripts` - 12 edges
+10. `db()` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `guidance()` --calls--> `straightLineGuidance()`  [EXTRACTED]
+  tests/guidance.test.ts → src/utils/guidance.ts
 - `SatellitesScreen()` --calls--> `useAppData()`  [EXTRACTED]
   app/(tabs)/satellites.tsx → src/hooks/AppData.tsx
 - `WaypointsScreen()` --calls--> `straightLineGuidance()`  [EXTRACTED]
   app/(tabs)/waypoints.tsx → src/utils/guidance.ts
+- `WaypointsScreen()` --calls--> `captureLocationSnapshot()`  [EXTRACTED]
+  app/(tabs)/waypoints.tsx → src/utils/waypointValidation.ts
 - `GuidanceScreen()` --calls--> `straightLineGuidance()`  [EXTRACTED]
   app/guidance.tsx → src/utils/guidance.ts
-- `MapScreen()` --calls--> `useAppData()`  [EXTRACTED]
-  app/map.tsx → src/hooks/AppData.tsx
-- `MapScreen()` --calls--> `formatMeasurement()`  [EXTRACTED]
-  app/map.tsx → src/utils/locationDisplay.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (26 total, 6 thin omitted)
+## Communities (30 total, 6 thin omitted)
 
-### Community 0 - "routeRepository.ts"
-Cohesion: 0.07
-Nodes (40): errorMessage(), useRouteRecording(), enqueue(), run(), shareRouteGpx(), ROUTE_MIGRATION_2, db(), finite() (+32 more)
+### Community 0 - "RecordedRoute"
+Cohesion: 0.26
+Nodes (9): db(), finite(), nullableFinite(), one(), parsePoint(), parseRoute(), SQLiteRouteRepository, RecordedRoute (+1 more)
 
-### Community 1 - "LocationScreen.tsx"
-Cohesion: 0.23
-Nodes (9): InfoButton(), styles, Reading(), styles, formatTime(), LocationScreen(), styles, formatSpeed() (+1 more)
+### Community 1 - "waypointValidation.ts"
+Cohesion: 0.11
+Nodes (26): EditForm(), save(), NewWaypointScreen(), save(), initializeDatabase(), requireDraft(), SQLiteWaypointRepository, waypointRepository (+18 more)
 
 ### Community 2 - "AppData.tsx"
 Cohesion: 0.06
-Nodes (58): GuidanceScreen(), styles, formatElapsed(), RecordingScreen(), styles, RouteDetailsScreen(), styles, RoutesScreen() (+50 more)
+Nodes (50): GuidanceScreen(), styles, formatElapsed(), RecordingScreen(), styles, RouteDetailsScreen(), styles, RoutesScreen() (+42 more)
 
 ### Community 3 - "dependencies"
 Cohesion: 0.05
 Nodes (43): expo, expo-constants, expo-crypto, expo-document-picker, expo-file-system, expo-linking, expo-location, expo-router (+35 more)
 
 ### Community 4 - "routeQualityPolicy.test.ts"
-Cohesion: 0.06
-Nodes (38): DistanceStatus, RouteSample, radians(), straightLineGuidance(), evaluateQualitySample(), QualityDecision, QualityState, ROUTE_QUALITY_POLICY_V2 (+30 more)
+Cohesion: 0.09
+Nodes (21): evaluateQualitySample(), afterInvalid, afterLongGap, afterSpike, anchor, base, boundary, counted (+13 more)
 
 ### Community 5 - "expo"
 Cohesion: 0.05
@@ -96,7 +100,7 @@ Nodes (39): backgroundColor, backgroundImage, foregroundImage, monochromeImage, 
 
 ### Community 6 - "Navira — Offline GNSS Lab"
 Cohesion: 0.05
-Nodes (38): Conclusion and limits, Conditions and observations, Device test record, Map issue review (source only, 2026-10-04), Milestone 2 — Android preview APK, Milestone 3 — GitHub Actions release APK, Milestone 4 — offline saved waypoints, Milestone 5 — tabs, guidance, and UX fixes (+30 more)
+Nodes (39): Conclusion and limits, Conditions and observations, Device test record, Map issue review (source only, 2026-10-04), Milestone 2 — Android preview APK, Milestone 3 — GitHub Actions release APK, Milestone 4 — offline saved waypoints, Milestone 5 — tabs, guidance, and UX fixes (+31 more)
 
 ### Community 7 - "render-brand.js"
 Cohesion: 0.08
@@ -104,19 +108,19 @@ Nodes (24): adaptive, colorAt(), cyan, facet, favicon, foreground, fs, icon (+16
 
 ### Community 8 - "scripts"
 Cohesion: 0.07
-Nodes (26): eslint, eslint-config-expo, devDependencies, eslint, eslint-config-expo, @types/geojson, @types/react, typescript (+18 more)
+Nodes (27): eslint, eslint-config-expo, devDependencies, eslint, eslint-config-expo, @types/geojson, @types/react, typescript (+19 more)
 
 ### Community 9 - "satellites.tsx"
 Cohesion: 0.15
 Nodes (19): messages, SatellitesScreen(), styles, GnssModuleEvents, NaviraGnssModule, initialState, useGnssStatus(), GnssEvent (+11 more)
 
 ### Community 10 - "map.tsx"
-Cohesion: 0.09
-Nodes (38): MapScreen(), styles, Cue, LOCAL_STYLE, SpatialMap(), SpatialMapControls, styles, useSpatialRoutes() (+30 more)
+Cohesion: 0.12
+Nodes (25): MapScreen(), styles, Cue, LOCAL_STYLE, SpatialMap(), SpatialMapControls, styles, useSpatialRoutes() (+17 more)
 
-### Community 11 - "LocationStatus.tsx"
-Cohesion: 0.17
-Nodes (13): LocationStatus(), messages, styles, initialState, useLocationReading(), start(), areLocationServicesEnabled(), requestForegroundAccess() (+5 more)
+### Community 11 - "useLocationReading.ts"
+Cohesion: 0.22
+Nodes (13): useAppDataValue(), initialState, useLocationReading(), start(), useWaypoints(), create(), remove(), runWrite() (+5 more)
 
 ### Community 13 - "NaviraGnssModule"
 Cohesion: 0.33
@@ -142,12 +146,28 @@ Nodes (4): GNSS diagnostics model, Location model, Route model, Waypoint model
 Cohesion: 0.40
 Nodes (4): expo/tsconfig.base, compilerOptions, strict, extends
 
-### Community 19 - "useWaypoints"
-Cohesion: 0.70
-Nodes (5): useWaypoints(), create(), remove(), runWrite(), update()
+### Community 19 - "offlineMapRepository.ts"
+Cohesion: 0.18
+Nodes (21): OfflineMapPanel(), State, styles, useOfflineMaps(), pickOfflineMapPackage(), installBundledKabarakMap(), installOfflineMap(), listOfflineMaps() (+13 more)
+
+### Community 26 - "route.ts"
+Cohesion: 0.15
+Nodes (16): errorMessage(), useRouteRecording(), enqueue(), run(), shareRouteGpx(), RoutePoint, RouteSample, escapeXml() (+8 more)
+
+### Community 27 - "routeRepository.ts"
+Cohesion: 0.18
+Nodes (14): ROUTE_MIGRATION_2, PointRow, routeRepository, RouteRow, validDistanceStatuses, validReasons, validStatuses, PauseReason (+6 more)
+
+### Community 28 - "routeRecording.test.ts"
+Cohesion: 0.14
+Nodes (12): accepted, first, gap, last, manualBreak, moved, paused, recovered (+4 more)
+
+### Community 29 - "routeQualityPolicy.ts"
+Cohesion: 0.23
+Nodes (11): DistanceStatus, straightLineGuidance(), QualityDecision, QualityState, ROUTE_QUALITY_POLICY_V2, evaluateRouteSample(), MAX_PLAUSIBLE_SPEED_MPS, MIN_MOVEMENT_METERS (+3 more)
 
 ## Knowledge Gaps
-- **245 isolated node(s):** `name`, `slug`, `version`, `orientation`, `icon` (+240 more)
+- **251 isolated node(s):** `name`, `slug`, `version`, `orientation`, `icon` (+246 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -155,16 +175,16 @@ Nodes (5): useWaypoints(), create(), remove(), runWrite(), update()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `plugins` connect `expo` to `AppData.tsx`?**
-  _High betweenness centrality (0.078) - this node is a cross-community bridge._
+  _High betweenness centrality (0.076) - this node is a cross-community bridge._
 - **Why does `expo-router` connect `AppData.tsx` to `map.tsx`, `expo`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+  _High betweenness centrality (0.064) - this node is a cross-community bridge._
 - **What connects `name`, `slug`, `version` to the rest of the system?**
-  _245 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `routeRepository.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07481005260081823 - nodes in this community are weakly interconnected._
+  _251 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `waypointValidation.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.11025641025641025 - nodes in this community are weakly interconnected._
 - **Should `AppData.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05742393045069778 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05864197530864197 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.046511627906976744 - nodes in this community are weakly interconnected._
 - **Should `routeQualityPolicy.test.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06423034330011074 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._

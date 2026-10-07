@@ -8,3 +8,12 @@ export type OfflineMapPackage = {
   source: string;
   features: FeatureCollection<Geometry, { kind: 'road' | 'building' | 'water' | 'land'; class: string; name: string }>;
 };
+
+export type StoredOfflineMap = {
+  id: string;
+  name: string;
+  bounds: OfflineMapPackage['bounds'];
+  attribution: string;
+  source: string;
+  sizeBytes: number;
+};

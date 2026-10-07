@@ -7,6 +7,6 @@ export async function pickOfflineMapPackage(): Promise<OfflineMapPackage | null>
   const result = await DocumentPicker.getDocumentAsync({ type: 'application/json', copyToCacheDirectory: true, multiple: false });
   if (result.canceled) return null;
   const file = new File(result.assets[0].uri);
-  if (file.size > 5_000_000) throw new Error('Prototype map package exceeds 5 MB');
+  if (file.size === null || file.size > 5_000_000) throw new Error('Map package exceeds 5 MB or has unknown size');
   return parseOfflineMapPackage(JSON.parse(await file.text()) as unknown);
 }

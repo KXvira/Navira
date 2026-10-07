@@ -10,6 +10,8 @@ The Waypoints tab keeps a Save action and saved-place list near the top. A selec
 
 The Routes tab has a compact unfinished-recording entry and a virtualized saved-route list. The focused recording screen shows state, active time, confirmed stored samples, distance-contributing points, observed low-precision duration, and estimated distance, followed by Start/Pause/Resume/Stop/Save controls as applicable. It explains foreground-only behavior and requires explicit resume after lock or background. The saved-route detail screen shows sample exclusion reasons and explains that GPX omits excluded samples. Storage errors remain visible; no count is presented for an uncommitted point.
 
+The map keeps offline coverage controls in a compact expandable panel. Its collapsed state shows missing, inside, or outside coverage for the map center; when available, it separately reports whether the current location is outside the selected package. The expanded list shows each package's name, bounds, actual storage size, source, and selection state. Removal uses a platform confirmation alert. Invalid package files are counted and retained, with errors and Retry visible. Attribution remains visible whenever a package is selected.
+
 ## Brand assets
 
 The Navira mark is a northeast navigation pointer inside a broken satellite orbit. Its editable source is `assets/brand/navira-mark.svg`; `node scripts/render-brand.js` reproduces the local PNGs and the review preview. The palette is navy `#08192B`, mint `#5BF1BE`, cyan `#3BCDEB`, and off-white `#F2FCFF` for the themed monochrome mask. The app's existing screen canvas remains `#08131F`.

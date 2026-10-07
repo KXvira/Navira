@@ -4,7 +4,7 @@ Current behavior: on mount or retry, request foreground permission, check whethe
 
 Navira requests no background permission. Live coordinates remain in memory unless the user saves a waypoint or starts a foreground route recording; those records stay in local SQLite. Native Android satellite diagnostics exist but remain separate from Expo Location readings. Owner-reported offline operation applies only to the recorded airplane-mode device conditions; it does not prove GNSS-only location sources. The 7A spatial map is accepted by owner report; 7B basemap rendering awaits device verification.
 
-The 7B prototype accepts only a local, schema checked package of at most 5 MB through the picker. The bundled Kabarak sample and imported packages are not persisted. Attribution must be visible whenever a package is loaded. Map packages never alter recorded coordinates, route totals, or waypoint rows. No map request or coordinate upload is permitted; `INTERNET` remains blocked.
+The 7B importer accepts only local, schema checked packages of at most 5 MB through the picker. Up to 10 packages and 50 MB total may be stored in app documents. Import selects the saved package; later selection persists across relaunch. The selected package's attribution remains visible. Removing a package requires confirmation and deletes only that map file; saved routes, coordinates, totals, and waypoint rows are unaffected. Missing selection, map center outside coverage, and current location outside coverage have distinct messages. No map request or coordinate upload is permitted; `INTERNET` remains blocked.
 
 ## Milestone 3 GNSS behavior
 

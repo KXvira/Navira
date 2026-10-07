@@ -69,3 +69,7 @@ Minimal device check: open Kitchen's route details and capture the header showin
 ### Milestone 7A closure — owner report, 2026-10-07
 
 The owner reports that the rebuilt APK passes their device checks and accepts the latest map fixes. Individual observations, APK build ID, Android version, and exact test conditions were not supplied for this report; the earlier checklist must not be treated as a list of separately confirmed results. The intermittent location behavior and SQLite exception remain unresolved, with unknown causes. The route-specific display discrepancy has no supplied database-row comparison, so its cause on the device is also unconfirmed. This report does not verify milestone 7B offline basemap rendering.
+
+## Milestone 7B — Kabarak basemap prototype
+
+On 2026-10-07, the owner reported that the Kabarak basemap rendered on a Samsung A16 with airplane mode enabled and Wi-Fi off. The owner checked the rendered map against an existing saved Kabarak waypoint. The owner was in Mogotio during the test and has no recorded route inside the sample coverage. This is owner-reported acceptance of native offline basemap rendering and the saved-waypoint check under those conditions. It does not verify in-coverage route alignment, persistent package management, or any individual map test not described here. APK build ID and Android version were not supplied in this report. The intermittent location and SQLite incidents remain unresolved with unknown causes.
