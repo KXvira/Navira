@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - milestone-7a-native
+      - milestone-7b-offline-maps
 
 permissions:
   contents: read

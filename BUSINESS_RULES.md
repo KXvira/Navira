@@ -2,7 +2,9 @@
 
 Current behavior: on mount or retry, request foreground permission, check whether device Location services are enabled, then subscribe to updates. Denial shows an instruction to allow access in app settings. Disabled services show an instruction to enable Location. Startup and watcher failures show an error and retry. The screen shows waiting until the first callback, receiving on updates, and stale after 15 seconds without one. Retry restarts the foreground flow. Missing values say `Unavailable`.
 
-Navira requests no background permission. Live coordinates remain in memory unless the user saves a waypoint or starts a foreground route recording; those records stay in local SQLite. Native Android satellite diagnostics exist but remain separate from Expo Location readings. Owner-reported offline operation applies only to the recorded airplane-mode device conditions; it does not prove GNSS-only location sources. Maps are planned, not implemented.
+Navira requests no background permission. Live coordinates remain in memory unless the user saves a waypoint or starts a foreground route recording; those records stay in local SQLite. Native Android satellite diagnostics exist but remain separate from Expo Location readings. Owner-reported offline operation applies only to the recorded airplane-mode device conditions; it does not prove GNSS-only location sources. The 7A spatial map is accepted by owner report; 7B basemap rendering awaits device verification.
+
+The 7B prototype accepts only a local, schema checked package of at most 5 MB through the picker. The bundled Kabarak sample and imported packages are not persisted. Attribution must be visible whenever a package is loaded. Map packages never alter recorded coordinates, route totals, or waypoint rows. No map request or coordinate upload is permitted; `INTERNET` remains blocked.
 
 ## Milestone 3 GNSS behavior
 

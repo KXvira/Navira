@@ -4,14 +4,15 @@ import { Camera, GeoJSONSource, Layer, Map, Marker, type CameraRef, type MapRef,
 import type { FeatureCollection, LineString, Point } from 'geojson';
 import type { RoutePoint } from '../types/route';
 import type { Waypoint } from '../types/waypoint';
+import type { OfflineMapPackage } from '../types/offlineMap';
 import { accuracyGeometry, displaySegments } from '../utils/mapCues';
 import { coordinateBounds, routeGeometry, visibleRoutePoints } from '../utils/spatialGeometry';
 
 const LOCAL_STYLE: StyleSpecification = { version: 8, name: 'Navira local canvas', sources: {}, layers: [{ id: 'canvas', type: 'background', paint: { 'background-color': '#102a39' } }] };
-export type SpatialMapControls = { fitRoute: () => void; recenter: () => void };
+export type SpatialMapControls = { fitRoute: () => void; fitCoverage: () => void; recenter: () => void };
 type Cue = { key: string; coordinate: [number, number]; title: string; detail: string; waypointId?: string; kind: 'waypoint' | 'start' | 'finish' | 'isolated' | 'sample' | 'you' };
 
-export function SpatialMap({ waypoints, pointsByRoute, routeId, waypointId, current, accuracy, controls, onWaypointDetails }: { waypoints: Waypoint[]; pointsByRoute: Record<string, RoutePoint[]>; routeId?: string; waypointId?: string; current: [number, number] | null; accuracy: number | null | undefined; controls: React.RefObject<SpatialMapControls | null>; onWaypointDetails: (id: string) => void }) {
+export function SpatialMap({ waypoints, pointsByRoute, routeId, waypointId, current, accuracy, offlineMap, controls, onWaypointDetails }: { waypoints: Waypoint[]; pointsByRoute: Record<string, RoutePoint[]>; routeId?: string; waypointId?: string; current: [number, number] | null; accuracy: number | null | undefined; offlineMap: OfflineMapPackage | null; controls: React.RefObject<SpatialMapControls | null>; onWaypointDetails: (id: string) => void }) {
   const camera = useRef<CameraRef>(null);
   const map = useRef<MapRef>(null);
   const [selectionKeys, setSelectionKeys] = useState<string[]>([]);
@@ -49,7 +50,9 @@ export function SpatialMap({ waypoints, pointsByRoute, routeId, waypointId, curr
     else camera.current?.fitBounds(bounds, { padding: { top: 60, right: 40, bottom: 60, left: 40 }, duration: 350 });
   };
   const recenter = () => { if (current) camera.current?.easeTo({ center: current, zoom: 15, duration: 350 }); };
-  useImperativeHandle(controls, () => ({ fitRoute, recenter }));
+  const fitCoverage = () => { if (offlineMap) camera.current?.fitBounds(offlineMap.bounds, { padding: { top: 40, right: 30, bottom: 40, left: 30 }, duration: 350 }); };
+  useImperativeHandle(controls, () => ({ fitRoute, fitCoverage, recenter }));
+  useEffect(() => { if (offlineMap) camera.current?.fitBounds(offlineMap.bounds, { padding: { top: 40, right: 30, bottom: 40, left: 30 }, duration: 350 }); }, [offlineMap]);
   useEffect(() => {
     const selectedWaypoint = waypoints.find((point) => point.id === waypointId);
     if (selectedWaypoint) camera.current?.jumpTo({ center: [selectedWaypoint.longitude, selectedWaypoint.latitude], zoom: 15 });
@@ -72,6 +75,12 @@ export function SpatialMap({ waypoints, pointsByRoute, routeId, waypointId, curr
   };
   return <View style={styles.container}><View style={styles.modeSwitch}>{(['line', 'points'] as const).map((option) => <Pressable key={option} accessibilityRole="button" accessibilityState={{ selected: mode === option }} accessibilityLabel={`${option === 'line' ? 'Line' : 'Points'} route display`} onPress={() => { setMode(option); setSelectionKeys([]); setSelectedCueKey(null); }} style={[styles.modeButton, mode === option && styles.modeSelected]}><Text style={styles.modeText}>{option === 'line' ? 'Line' : 'Points'}</Text></Pressable>)}</View><Map ref={map} style={styles.map} mapStyle={LOCAL_STYLE} dragPan touchZoom doubleTapZoom touchRotate={false} touchPitch={false} logo={false} attribution={false} scaleBar scaleBarPosition={{ top: 8, left: 8 }}>
     <Camera ref={camera} initialViewState={{ center: [0, 0], zoom: 1 }} />
+    {offlineMap && <GeoJSONSource id="offline-basemap" data={offlineMap.features}>
+      <Layer id="map-buildings" type="fill" filter={['==', ['get', 'kind'], 'building']} paint={{ 'fill-color': '#506b67', 'fill-opacity': 0.8 }} />
+      <Layer id="map-land" type="fill" filter={['==', ['get', 'kind'], 'land']} paint={{ 'fill-color': '#294a3f' }} />
+      <Layer id="map-water" type="fill" filter={['==', ['get', 'kind'], 'water']} paint={{ 'fill-color': '#2b6a91' }} />
+      <Layer id="map-roads" type="line" filter={['==', ['get', 'kind'], 'road']} paint={{ 'line-color': '#e3d8ae', 'line-width': 2 }} />
+    </GeoJSONSource>}
     <GeoJSONSource id="accuracy" data={accuracyData}><Layer id="accuracy-fill" type="fill" paint={{ 'fill-color': '#74a9ff', 'fill-opacity': 0.13 }} /><Layer id="accuracy-outline" type="line" paint={{ 'line-color': '#a9c8ff', 'line-width': 1.5 }} /></GeoJSONSource>
     {mode === 'line' && <GeoJSONSource id="routes" data={lines}><Layer id="route-lines" type="line" paint={{ 'line-color': '#67d9e8', 'line-width': 2 }} /></GeoJSONSource>}
     {mode === 'line' && <GeoJSONSource id="route-anchors" data={anchors}><Layer id="route-anchor-dots" type="circle" paint={{ 'circle-color': '#67d9e8', 'circle-radius': 3 }} /></GeoJSONSource>}
